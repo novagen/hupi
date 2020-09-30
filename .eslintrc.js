@@ -15,7 +15,7 @@ module.exports = {
 		"sourceType": "module"
 	},
 	"rules": {
-		"no-console": 2,
+		"no-console": 1,
 		"no-unused-vars": [2, {
 			"args": "all",
 			"argsIgnorePattern": "^_"

@@ -102,3 +102,7 @@ dist
 
 # TernJS port file
 .tern-port
+
+# Builds and caches
+**/build
+backend/translation/translations/missing

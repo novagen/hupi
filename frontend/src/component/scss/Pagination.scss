@@ -1,0 +1,27 @@
+.pagination {
+	li {
+		&.pagination-next {
+			a {
+				&.blank::after {
+					margin-left: 0;
+				}
+			}
+		}
+
+		&.pagination-previous {
+			a {
+				&.blank::before {
+					margin-right: 0;
+				}
+			}
+		}
+	}
+
+	.pagination-counter {
+		font-size: 0.875rem;
+		display: block;
+		padding: 0.1875rem 0.625rem;
+		border-radius: 0;
+		color: #0a0a0a;
+	}
+}
