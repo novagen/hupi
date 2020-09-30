@@ -1,0 +1,19 @@
+{
+  "name": "hupi",
+  "version": "1.0.0",
+  "description": "Head Unit RPI for cars",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/novagen/hupi.git"
+  },
+  "author": "Novagen",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/novagen/hupi/issues"
+  },
+  "homepage": "https://github.com/novagen/hupi#readme"
+}
