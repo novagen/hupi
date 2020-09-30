@@ -4,7 +4,13 @@
   "description": "Head Unit RPI for cars",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "eslint": "eslint ./",
+    "npm-install": "node scripts/install.js",
+    "update": "node scripts/update.js",
+    "upgrade": "npm run update && npm run npm-install",
+    "depcheck": "node scripts/depcheck.js",
+    "audit": "node scripts/audit.js",
+    "clean": "./scripts/clean.sh"
   },
   "repository": {
     "type": "git",
@@ -15,5 +21,11 @@
   "bugs": {
     "url": "https://github.com/novagen/hupi/issues"
   },
-  "homepage": "https://github.com/novagen/hupi#readme"
+  "homepage": "https://github.com/novagen/hupi#readme",
+  "devDependencies": {
+    "depcheck": "^1.2.0",
+    "eslint": "^7.10.0",
+    "esm": "^3.2.25",
+    "npm-check-updates": "^9.0.3"
+  }
 }
