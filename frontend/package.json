@@ -1,0 +1,21 @@
+{
+  "name": "hupi-frontend",
+  "version": "1.0.0",
+  "description": "Head Unit RPI for cars",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/novagen/hupi.git"
+  },
+  "author": "Novagen",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/novagen/hupi/issues"
+  },
+  "homepage": "https://github.com/novagen/hupi#readme",
+  "dependencies": {
+    "modapp": "^2.4.0",
+    "resclient": "^2.2.0"
+  }
+}
