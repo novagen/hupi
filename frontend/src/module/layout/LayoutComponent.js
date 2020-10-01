@@ -1,7 +1,5 @@
-import { Elem, Transition } from 'modapp-base-component';
+import { Elem, Transition, Txt } from 'modapp-base-component';
 import MainComponent from './MainComponent';
-import PermissionComponent from './PermissionComponent';
-import { Loader } from 'component';
 
 class LayoutComponent {
 
@@ -28,10 +26,21 @@ class LayoutComponent {
 	render(el) {
 		this.node = new Elem(n =>
 			n.elem('body', 'div', { className: 'body' }, [
+				n.elem('header', { }, [
+					n.elem('div', { }, [
+						n.component(new Txt('start', {
+							tsgName: 'span',
+							className: 'start',
+							events: {
+								click: () => {
+									this.module.router.setRoute(null);
+								}
+							}
+						}))
+					])
+				]),
 				n.elem('main', { className: 'content' }, [
-					n.component(new PermissionComponent(this.app, this.module, this.params, this.model)),
-					n.component('main', new Transition()),
-					n.component('loader', new Loader(this.model))
+					n.component('main', new Transition())
 				])
 			])
 		);
@@ -39,7 +48,6 @@ class LayoutComponent {
 		this._setListeners(true);
 
 		this.node.render(el);
-		this.module.loader = this.node.getNode("loader");
 
 		this._setRoute();
 	}

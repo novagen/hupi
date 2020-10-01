@@ -8,7 +8,7 @@ class Layout {
 		this.app = app;
 		this.params = params;
 
-		this.app.require([ 'router', 'client', 'alert', 'permission', 'translation' ], this._init.bind(this));
+		this.app.require([ 'router', 'client', 'alert', 'translation' ], this._init.bind(this));
 		this._alert = this._alert.bind(this);
 		this._askForNotificationPermission = this._askForNotificationPermission.bind(this);
 	}
@@ -19,7 +19,7 @@ class Layout {
 		this._modelChanged = this._modelChanged.bind(this);
 
 		this.module.router.addRoute({
-			id: "",
+			id: '',
 			name: 'Start',
 			parentId: null,
 			order: 10,
@@ -30,6 +30,8 @@ class Layout {
 			getUrl: () => {},
 			parseUrl: () => {}
 		});
+
+		this.module.router.setDefault('', {});
 
 		this._notyf = new Notyf({
 			duration: 3000,

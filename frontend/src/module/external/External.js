@@ -1,6 +1,6 @@
-import AudioComponent from './AudioComponent';
+import ExternalComponent from './ExternalComponent';
 
-class Audio {
+class External {
 	constructor(app, params) {
 		this.app = app;
 		this.params = params;
@@ -13,13 +13,13 @@ class Audio {
 		this.model = this.module.client.getModel();
 
 		this.module.router.addRoute({
-			id: "audio",
-			name: 'Audio',
+			id: "external",
+			name: 'External',
 			parentId: null,
-			order: 20,
+			order: 30,
 			setState: () => {},
 			component: {
-				'main': new AudioComponent(this.app, this.module)
+				'main': new ExternalComponent(this.app, this.module)
 			},
 			getUrl: () => {},
 			parseUrl: () => {}
@@ -32,4 +32,4 @@ class Audio {
 	}
 }
 
-export default Audio;
+export default External;
