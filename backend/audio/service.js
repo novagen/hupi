@@ -1,7 +1,6 @@
 import config from '../config';
 import { Logger } from 'wace-admin-support';
 import { Service, Constants } from 'wace-admin-service';
-import utf8 from 'utf8';
 
 const nats = new Service("Audio", Service.getNatsConfig(config)).connect();
 const portAudio = require('naudiodon');

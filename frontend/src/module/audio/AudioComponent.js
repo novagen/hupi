@@ -27,8 +27,6 @@ class AudioComponent extends ModuleComponent {
 			])
 		);
 
-		console.log(this.model);
-
 		this.node.render(el);
 	}
 
