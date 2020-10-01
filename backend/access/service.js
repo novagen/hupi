@@ -12,4 +12,13 @@ nats.subscribe('access.system.translation.>', (_, reply) => {
 	}));
 });
 
+nats.subscribe('access.audio.>', (_, reply) => {
+	nats.publish(reply, JSON.stringify({
+		result: {
+			get: true,
+			call: "*"
+		}
+	}));
+});
+
 nats.publish('system.reset', JSON.stringify({ resources: [ 'access.>' ] }));
