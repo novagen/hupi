@@ -14,10 +14,9 @@ class LayoutComponent {
 
 		this._modelChanged = this._modelChanged.bind(this);
 		this._setRoute = this._setRoute.bind(this);
-		this._addRoute = this._addRoute.bind(this);
-		this._delRoute = this._delRoute.bind(this);
 		this._setContent = this._setContent.bind(this);
 		this._setComponent = this._setComponent.bind(this);
+		this._setHomeButton = this._setHomeButton.bind(this);
 	}
 
 	_modelChanged() {
@@ -28,15 +27,7 @@ class LayoutComponent {
 			n.elem('body', 'div', { className: 'body' }, [
 				n.elem('header', { }, [
 					n.elem('div', { }, [
-						n.component(new Txt('start', {
-							tsgName: 'span',
-							className: 'start',
-							events: {
-								click: () => {
-									this.module.router.setRoute(null);
-								}
-							}
-						}))
+						n.component('home', new Transition())
 					])
 				]),
 				n.elem('main', { className: 'content' }, [
@@ -52,6 +43,26 @@ class LayoutComponent {
 		this._setRoute();
 	}
 
+	_setHomeButton(isHome) {
+		if (!this.node) { return; }
+
+		let node = this.node.getNode("home");
+		if (!node) { return; }
+
+		let component = new Txt(isHome ? 'start' : 'back', {
+			tsgName: 'span',
+			className: 'start',
+			events: {
+				click: () => {
+					if (isHome) { return; }
+					this.module.router.setRoute(null);
+				}
+			}
+		});
+
+		node.set(component);
+	}
+
 	_setRoute() {
 		const current = this.module.router.getCurrent();
 
@@ -60,12 +71,8 @@ class LayoutComponent {
 		} else {
 			this._setComponent("main", this.defaultComponent);
 		}
-	}
 
-	_addRoute() {
-	}
-
-	_delRoute() {
+		this._setHomeButton(!current || !current.route || current.route.id === '');
 	}
 
 	_setContent() {
@@ -95,13 +102,9 @@ class LayoutComponent {
 	_setListeners(on) {
 		if (on) {
 			this.module.router.on('set', this._setRoute);
-			this.module.router.on('add', this._addRoute);
-			this.module.router.on('remove', this._delRoute);
 			this.model.on('change', this._modelChanged);
 		} else {
 			this.module.router.off('set', this._setRoute);
-			this.module.router.off('add', this.addRoute);
-			this.module.router.off('remove', this.delRoute);
 			this.model.off('change', this._modelChanged);
 		}
 	}
