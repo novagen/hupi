@@ -6,7 +6,7 @@ import './ExternalComponent.scss';
 
 class ExternalComponent extends ModuleComponent {
 	constructor(app, module) {
-		super(module);
+		super('module.external', module);
 
 		this.app = app;
 		this.module = module;
@@ -15,7 +15,7 @@ class ExternalComponent extends ModuleComponent {
 	render(el) {
 		this.node = new Elem(n =>
 			n.elem("div", { className: "audio" }, [
-				n.component(new Txt(this.t(`module_external_title`), { }))
+				n.component(new Txt(this.t(`title`), { }))
 			])
 		);
 

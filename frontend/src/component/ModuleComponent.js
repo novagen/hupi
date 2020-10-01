@@ -3,15 +3,20 @@
  * Contains helpers for Alert and Translate.
  */
 class ModuleComponent {
-	constructor(module) {
+	constructor(namespace, module) {
+        if(!namespace) {
+            throw "Namespace missing";
+        }
+
         if(!module) {
             throw "Modules missing";
-        } 
+        }
         
         if (!module.translation || !module.alert) {
             throw "Modules Alert and Translation are required";
         }
 
+        this.namespace = namespace.replace(/\./g, "_");
 		this.module = module;
 
         this.translate = this.module.translation.t;
@@ -37,7 +42,7 @@ class ModuleComponent {
      * @param {String} ns 
      */
     t(key, formatter, ns) {
-        return this.translate(key, formatter, ns);
+        return this.translate(this.namespace + '_' + key.replace(/\./g, "_"), formatter, ns);
     }
 }
 

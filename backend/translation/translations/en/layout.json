@@ -1,2 +1,8 @@
 {
+    "module_layout_main_menu_item_audio": "Audio",
+    "module_layout_main_menu_item_external": "External",
+    "module_layout_button_start": "Start",
+    "module_external_title": "External",
+    "module_layout_button_back": "Back",
+    "module_audio_title": "Audio"
 }

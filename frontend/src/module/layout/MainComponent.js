@@ -23,7 +23,7 @@ const menuSorter = (a, b) => {
 
 class MainComponent extends ModuleComponent {
 	constructor(app, module) {
-		super(module);
+		super('module.layout.main', module);
 
 		this.app = app;
 		this.module = module;
@@ -137,7 +137,7 @@ class MainComponent extends ModuleComponent {
 	render(el) {
 		this.node = new Elem(n => n.elem("div", { className: "icons" }, [
 			n.component("list", new CollectionList(this.navigation, m => {
-				return new ModelTxt(m, (m) => this.t(`module_layout_menu_item_${m.name}`), {
+				return new ModelTxt(m, (m) => this.t(`menu.item.${m.name}`), {
 					events: {
 						click: () => {
 							this._gotoPage(m.id);

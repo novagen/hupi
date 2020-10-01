@@ -6,7 +6,7 @@ import './AudioComponent.scss';
 
 class AudioComponent extends ModuleComponent {
 	constructor(app, module) {
-		super(module);
+		super('module.audio', module);
 
 		this.app = app;
 		this.module = module;
@@ -15,7 +15,7 @@ class AudioComponent extends ModuleComponent {
 	render(el) {
 		this.node = new Elem(n =>
 			n.elem("div", { className: "audio" }, [
-				n.component(new Txt(this.t(`module_audio_title`), { }))
+				n.component(new Txt(this.t(`title`), { }))
 			])
 		);
 

@@ -1,9 +1,12 @@
 import { Elem, Transition, Txt } from 'modapp-base-component';
+import { ModuleComponent } from 'component';
 import MainComponent from './MainComponent';
 
-class LayoutComponent {
+class LayoutComponent extends ModuleComponent {
 
 	constructor(app, module, params, model) {
+		super("module.layout", module);
+
 		this.app = app;
 		this.module = module;
 		this.params = params;
@@ -49,7 +52,7 @@ class LayoutComponent {
 		let node = this.node.getNode("home");
 		if (!node) { return; }
 
-		let component = new Txt(isHome ? 'start' : 'back', {
+		let component = new Txt(isHome ? this.t(`button.start`) : this.t(`button.back`), {
 			tsgName: 'span',
 			className: 'start',
 			events: {
