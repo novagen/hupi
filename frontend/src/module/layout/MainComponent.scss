@@ -1,0 +1,12 @@
+header {
+	padding: 10px 20px;
+	width: 100%;
+	box-sizing: border-box;
+}
+
+
+main {
+	&.content {
+		padding: 1rem;
+	}
+}

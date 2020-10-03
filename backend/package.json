@@ -1,0 +1,22 @@
+{
+	"name": "hupi-backend",
+	"version": "1.0.0",
+	"description": "Head Unit RPI for cars",
+	"scripts": {},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/novagen/hupi.git"
+	},
+	"author": "Novagen",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/novagen/hupi/issues"
+	},
+	"homepage": "https://github.com/novagen/hupi#readme",
+	"dependencies": {
+		"nats": "^1.4.12",
+		"naudiodon": "^2.2.4",
+		"wace-admin-service": "^1.0.13",
+		"wace-admin-support": "^1.0.12"
+	}
+}
