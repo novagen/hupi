@@ -95,9 +95,9 @@ class LayoutComponent extends ModuleComponent {
 			}
 
 			if (component) {
-				nodeItem.fade(component);
+				nodeItem.set(component);
 			} else if (defaultComponent) {
-				nodeItem.fade(defaultComponent);
+				nodeItem.set(defaultComponent);
 			}
 		}
 	}

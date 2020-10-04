@@ -55,29 +55,23 @@ class MainComponent extends ModuleComponent {
 		this._delNavigation = this._delNavigation.bind(this);
 		this._addRoute = this._addRoute.bind(this);
 		this._delRoute = this._delRoute.bind(this);
-		this._setRoute = this._setRoute.bind(this);
 
 		this._setListeners = this._setListeners.bind(this);
 	}
 
 	_setListeners(on) {
 		if (on) {
-			this.module.router.on('set', this._setRoute);
 			this.module.router.on('add', this._addRoute);
 			this.module.router.on('remove', this._delRoute);
 		} else {
-			this.module.router.off('set', this._setRoute);
-			this.module.router.off('add', this.addRoute);
-			this.module.router.off('remove', this.delRoute);
+			this.module.router.off('add', this._addRoute);
+			this.module.router.off('remove', this._delRoute);
 		}
 	}
 
 	_gotoPage(page) {
 		this.model.set({ expanded: false });
 		this.module.router.setRoute(page);
-	}
-
-	_setRoute() {
 	}
 
 	_addRoute(route) {
@@ -135,19 +129,32 @@ class MainComponent extends ModuleComponent {
 	}
 
 	render(el) {
-		this.node = new Elem(n => n.elem("div", { className: "icons" }, [
-			n.component("list", new CollectionList(this.navigation, m => {
-				return new ModelTxt(m, (m) => this.t(`menu.item.${m.name}`), {
-					events: {
-						click: () => {
-							this._gotoPage(m.id);
-						}
-					},
-					tagName: "a",
-					className: 'item'
+		console.log("render main");
+		this.node = new Elem(n => n.component("list", new CollectionList(this.navigation, m => {
+			return new ModelTxt(m, (m, e) => {
+				
+				this.t(`menu.item.${m.name}`).then(v => {
+					console.log(e, v);
+					e.setText(v);
+					e.removeClass('invisible');
 				});
-			}))
-		]));
+
+				return '';
+			}, {
+				events: {
+					click: () => {
+						this._gotoPage(m.id);
+					}
+				},
+				tagName: "span",
+				className: 'item invisible'
+			});
+		}, {
+			className: "grid-x main-items",
+			tagName: 'div',
+			subTagName: 'div',
+			subClassName: () => 'cell small-3'
+		})));
 
 		this._initNavigation();
 		this._setListeners(true);
