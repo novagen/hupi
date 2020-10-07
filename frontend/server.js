@@ -1,4 +1,3 @@
-var path = require('path');
 var express = require('express');
 var webpack = require('webpack');
 var webpackMiddleware = require('webpack-dev-middleware');
@@ -21,12 +20,6 @@ const middleware = webpackMiddleware(webpack(webpackConfig), {
 });
 
 app.use(middleware);
-
-app.get('*', function response(_, res) {
-	var file = path.join(__dirname, 'build/index.html');
-	res.write(middleware.fileSystem.readFileSync(file));
-	res.end();
-});
 
 app.listen(port, '0.0.0.0', function onStart(err) {
 	if (err) {

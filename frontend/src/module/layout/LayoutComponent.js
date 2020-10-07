@@ -1,6 +1,7 @@
 import { Elem, Transition, Txt } from 'modapp-base-component';
 import { ModuleComponent } from 'component';
 import MainComponent from './MainComponent';
+import VolumeComponent from './VolumeComponent';
 
 class LayoutComponent extends ModuleComponent {
 
@@ -11,7 +12,7 @@ class LayoutComponent extends ModuleComponent {
 		this.module = module;
 		this.params = params;
 		this.model = model;
-		this.defaultComponent = new MainComponent(this.app, this.module);
+		this.defaultComponent = new MainComponent(this.app, this.module, this.params.main);
 
 		this._setListeners = this._setListeners.bind(this);
 
@@ -34,7 +35,14 @@ class LayoutComponent extends ModuleComponent {
 					])
 				]),
 				n.elem('main', { className: 'content' }, [
-					n.component('main', new Transition())
+					n.elem('div', { className: 'grid-y' }, [
+						n.elem('div', { className: 'cell' }, [
+							n.component('volume', new VolumeComponent(this.app, this.module, this.params.volume))
+						]),
+						n.elem('div', { className: 'cell' }, [
+							n.component('main', new Transition())
+						])
+					]),
 				])
 			])
 		);

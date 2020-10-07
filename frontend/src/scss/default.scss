@@ -1,6 +1,12 @@
 @charset "UTF-8";
 @import 'foundation-sites/scss/foundation';
+@include foundation-range-input;
 @include foundation-everything();
+
+
+$fa-font-path:"~@fortawesome/fontawesome-free/webfonts";
+@import '~@fortawesome/fontawesome-free/scss/solid';
+@import '~@fortawesome/fontawesome-free/scss/fontawesome';
 
 html,
 body {

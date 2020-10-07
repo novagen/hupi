@@ -13,18 +13,17 @@ main {
 
 		.main-items {
 			.cell {
-				padding: 20px;
-				.item {
-					&.invisible {
-						visibility: hidden;
-					}
-					display: inline-block;
+				&.item {
 					padding: 20px;
-					text-align: center;
 					background: #afafaf;
 					border-radius: 0.5em;
-					box-sizing: border-box;
-					width: 100%;
+					.text {
+						display: inline-block;
+						padding: 20px;
+						text-align: center;
+						box-sizing: border-box;
+						width: 100%;
+					}
 				}
 			}
 		}

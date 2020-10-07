@@ -15,6 +15,7 @@ class Layout {
 
 	_init(module) {
 		this.module = module;
+
 		this.model = this.module.client.getModel();
 		this._modelChanged = this._modelChanged.bind(this);
 
@@ -25,7 +26,7 @@ class Layout {
 			order: 10,
 			setState: () => {},
 			component: {
-				'main': new MainComponent(this.app, this.module)
+				'main': new MainComponent(this.app, this.module, this.params)
 			},
 			getUrl: () => {},
 			parseUrl: () => {}

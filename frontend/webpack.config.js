@@ -106,16 +106,8 @@ module.exports = {
 				]
 			},
 			{
-				test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
-				use: {
-					loader: "url-loader",
-					options: {
-						limit: 50000,
-						mimetype: "application/x-font-ttf",
-						name: "[name].[ext]",
-						outputPath: 'fonts/'
-					}
-				}
+				test: /\.(woff|woff2|eot|otf|svg|ttf)$/,
+				loader: 'url-loader?limit=8192'
 			}
 		]
 	}
