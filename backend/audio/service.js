@@ -50,28 +50,24 @@ const listenOnRotaryEnconder = () => {
 
 			end(null, response);
 		});
-	}, 10);
+	}, 5);
 
 	polling.on('error', function (error) {
-		console.log(error);
+		Logger.error(error);
 	});
 
 	polling.on('result', function (result) {
-		// ignore if no changes occurred
 		if (result.changed) {
-			// add last changes to the queue
 			let length = pinQueue.push({
 				clk: result.clk,
 				dt: result.dt,
 				sw: result.sw
 			});
 
-			// make sure the queue is never longer than 4
 			if (length > 4) {
 				pinQueue.shift();
 			}
 
-			// check for events
 			getRotaryEvent();
 		}
 	});
@@ -167,8 +163,7 @@ const checkForClick = (queue) => {
 
 		// Ignored key down.
 		// if (equals(pinData, [1, 0])) {
-		// 	console.log('click up');
-		// 	return;
+		// 	return true;
 		// }
 
 		if (equals(pinData, [0, 1])) {
