@@ -30,18 +30,15 @@ const listenOnRotaryEnconder = () => {
 	}, 10);
 
 	polling.on('error', function (error) {
-		// The polling encountered an error, handle it here.
 		console.log(error);
 	});
 
 	polling.on('result', function (result) {
-		// The polling yielded some result, process it here.
 		if (result.changed) {
-			console.log(result);
+			getRotaryEvent(result);
 		}
 	});
 
-	// Let's start polling.
 	polling.run(); 
 };
 
@@ -71,10 +68,6 @@ const doRotaryEncoderPoll = (cb) => {
 		changed = true;
 	}
 
-	if (changed) {
-		getRotaryEvent(pins);
-	}
-
 	pins.changed = changed;
 	cb(null, pins);
 };
@@ -88,23 +81,28 @@ const getRotaryEvent = (pin) => {
 		pinQueue.shift();
 	}
 
-	checkForRotation();
-	checkForClick();
-};
-
-const checkForRotation = () => {
 	if (pinQueue.length == 4) {
-		let clks = pinQueue.map(i => i.clk);
-		let dts = pinQueue.map(i => i.dt);
+		checkForRotation(pinQueue);
+	}
 
-		console.log(clks, dts);
+	if (pinQueue.length >= 2) {
+		checkForClick(pinQueue);
 	}
 };
 
-const checkForClick = () => {
-	if (pinQueue.length > 1) {
-		let pinData = pinQueue.slice(pinQueue.length - 3, pinQueue.length - 1).map(i => i.sw);
-		console.log(pinData);
+const checkForRotation = (queue) => {
+	if (queue.length == 4) {
+		let clks = queue.map(i => i.clk);
+		let dts = queue.map(i => i.dt);
+
+		console.log('rotation', clks, dts);
+	}
+};
+
+const checkForClick = (queue) => {
+	if (queue.length > 1) {
+		let pinData = queue.slice(queue.length - 3, queue.length - 1).map(i => i.sw);
+		console.log('click', pinData);
 	}
 };
 
