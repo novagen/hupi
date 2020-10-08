@@ -5,34 +5,30 @@ import { Service, Constants } from 'wace-admin-service';
 import AsyncPolling from 'async-polling';
 import rpio from 'rpio';
 
-const equals = (current, array) => {
-    // if the other array is a falsy value, return
-    if (!array)
-        return false;
+const nats = new Service("Audio", Service.getNatsConfig(config)).connect();
+const portAudio = require('naudiodon');
 
-    // compare lengths - can save a lot of time 
-    if (current.length != array.length){
+const equals = (current, array) => {
+	if (!array) {
 		return false;
 	}
 
-    for (var i = 0, l=current.length; i < l; i++) {
-        // Check if we have nested arrays
-        if (current[i] instanceof Array && array[i] instanceof Array) {
-            // recurse into the nested arrays
-            if (!current[i].equals(array[i])) {
+	if (current.length != array.length) {
+		return false;
+	}
+
+	for (var i = 0, l = current.length; i < l; i++) {
+		if (current[i] instanceof Array && array[i] instanceof Array) {
+			if (!current[i].equals(array[i])) {
 				return false;
 			}
-        }           
-        else if (current[i] != array[i]) { 
-            // Warning - two different object instances will never be equal: {x:20} != {x:20}
-            return false;   
-        }           
-    }       
-    return true;
-};
+		} else if (current[i] != array[i]) {
+			return false;
+		}
+	}
 
-const nats = new Service("Audio", Service.getNatsConfig(config)).connect();
-const portAudio = require('naudiodon');
+	return true;
+};
 
 let pins = {
 	clk: null,
@@ -80,7 +76,7 @@ const listenOnRotaryEnconder = () => {
 		}
 	});
 
-	polling.run(); 
+	polling.run();
 };
 
 const doRotaryEncoderPoll = (cb) => {
@@ -125,30 +121,40 @@ const getRotaryEvent = () => {
 	}
 
 	if (pinQueue.length >= 2) {
-		checkForClick(pinQueue);
+		if (checkForClick(pinQueue)) {
+			toggleMute();
+		}
 	}
 };
 
-const clkUp = [ 0, 0, 1, 1 ];
-const dtUp = [ 1, 0, 0, 1 ];
+const clkUp = [0, 0, 1, 1];
+const dtUp = [1, 0, 0, 1];
 
-const clkDown = [ 1, 0, 0, 1 ];
-const dtDown = [ 0, 0, 1, 1 ];
+const clkDown = [1, 0, 0, 1];
+const dtDown = [0, 0, 1, 1];
 
 const checkForRotation = (queue) => {
 	if (queue.length == 4) {
 		let clks = queue.map(i => i.clk);
 		let dts = queue.map(i => i.dt);
 
+		let rotation = false;
+		let direction = 'none';
+
 		if (equals(clks, clkUp) && equals(dts, dtUp)) {
-			console.log('rotation up');
-			return;
+			rotation = true;
+			direction = 'up';
 		}
 
 		if (equals(clks, clkDown) && equals(dts, dtDown)) {
-			console.log('rotation down');
-			return;
+			rotation = true;
+			direction = 'down';
 		}
+
+		return {
+			rotation,
+			direction
+		};
 	}
 };
 
@@ -156,15 +162,17 @@ const checkForClick = (queue) => {
 	if (queue.length > 1) {
 		let pinData = queue.slice(queue.length - 3, queue.length - 1).map(i => i.sw);
 
-		if (equals(pinData, [ 1, 0 ])) {
-			console.log('click up');
-			return;
+		// Ignored key down.
+		// if (equals(pinData, [1, 0])) {
+		// 	console.log('click up');
+		// 	return;
+		// }
+
+		if (equals(pinData, [0, 1])) {
+			return true;
 		}
 
-		if (equals(pinData, [ 0, 1 ])) {
-			console.log('click down');
-			return;
-		}
+		return false;
 	}
 };
 
@@ -179,7 +187,7 @@ const getAudioModel = id => {
 		try {
 			let model = getAudioDevices().find(i => i.id == id);
 			resolve(model);
-		} catch(e) {
+		} catch (e) {
 			reject(e);
 		}
 	});
@@ -189,10 +197,16 @@ const sendListReply = (res, reply) => {
 	var result = [];
 
 	for (const m of res) {
-		result.push({ rid: "audio.device." + m.id });
+		result.push({
+			rid: "audio.device." + m.id
+		});
 	}
 
-	nats.publish(reply, JSON.stringify({ result: { collection: result }}));
+	nats.publish(reply, JSON.stringify({
+		result: {
+			collection: result
+		}
+	}));
 };
 
 const getAudioDevices = () => {
@@ -205,7 +219,11 @@ nats.subscribe('get.audio.device.*', function (_, reply, subj) {
 
 	getAudioModel(id).then(model => {
 		if (model) {
-			nats.publish(reply, JSON.stringify({ result: { model } }));
+			nats.publish(reply, JSON.stringify({
+				result: {
+					model
+				}
+			}));
 		} else {
 			nats.publish(reply, Constants.notFound);
 		}
@@ -220,6 +238,22 @@ const volumeModel = {
 	mute: false
 };
 
+const toggleMute = () {
+	let muted = {
+		mute : !volumeModel.mute
+	};
+
+	const changed = diff(volumeModel, muted);
+
+	if (changed && Object.keys(changed).length) {
+		Object.assign(volumeModel, changed);
+
+		nats.publish("event.audio.volume.change", JSON.stringify({
+			values: changed
+		}));
+	}
+}
+
 nats.subscribe('call.audio.volume.set', (req, reply) => {
 	const params = JSON.parse(req);
 	const changed = diff(volumeModel, params.params);
@@ -228,7 +262,10 @@ nats.subscribe('call.audio.volume.set', (req, reply) => {
 		Object.assign(volumeModel, changed);
 
 		nats.publish(reply, Constants.success);
-		nats.publish("event.audio.volume.change", JSON.stringify({ values: changed }));
+
+		nats.publish("event.audio.volume.change", JSON.stringify({
+			values: changed
+		}));
 	} else {
 		nats.publish(reply, Constants.success);
 	}
@@ -236,22 +273,27 @@ nats.subscribe('call.audio.volume.set', (req, reply) => {
 
 nats.subscribe('get.audio.volume', function (_, reply) {
 	if (volumeModel) {
-		nats.publish(reply, JSON.stringify({ result: { model: volumeModel } }));
+		nats.publish(reply, JSON.stringify({
+			result: {
+				model: volumeModel
+			}
+		}));
 	} else {
 		nats.publish(reply, Constants.notFound);
 	}
 });
 
-nats.subscribe('get.audio.devices', function(_, reply) {
+nats.subscribe('get.audio.devices', function (_, reply) {
 	try {
 		const devices = getAudioDevices();
 		sendListReply(devices, reply);
-	} catch(err) {
+	} catch (err) {
 		Logger.Error(err);
 		nats.publish(reply, Constants.internalError(JSON.stringify(err)));
+		
 		return;
 	}
 });
 
-nats.publish('system.reset', JSON.stringify({ resources: [ 'audio.>' ] }));
+nats.publish('system.reset', JSON.stringify({ resources: ['audio.>'] }));
 listenOnRotaryEnconder();
