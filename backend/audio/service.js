@@ -123,21 +123,20 @@ const pollEncoder = (cb) => {
 };
 
 const getRotaryEvent = () => {
-	if (pinQueue.length == 4) {
-		let rotation = checkForRotation(pinQueue);
-		if (rotation.changed) {
-			changeVolume(rotation.direction);
-			clearQueue();
-			return;
-		}
+	let rotation = checkForRotation(pinQueue);
+
+	if (rotation.changed) {
+		Logger.Debug("rotation");
+		changeVolume(rotation.direction);
+		clearQueue();
+		return;
 	}
 
-	if (pinQueue.length >= 2) {
-		if (checkForClick(pinQueue)) {
-			toggleMute();
-			clearQueue();
-			return;
-		}
+	if (checkForClick(pinQueue)) {
+		Logger.Debug("click");
+		toggleMute();
+		clearQueue();
+		return;
 	}
 };
 
@@ -145,8 +144,10 @@ const clearQueue = () => {
 	pinQueue = [];
 };
 
-const checkForRotation = (queue) => {
-	if (queue.length == 4) {
+const checkForRotation = () => {
+	const queue = pinQueue.slice();
+
+	if (queue.length >= 4) {
 		let clks = queue.map(i => i.clk);
 		let dts = queue.map(i => i.dt);
 
@@ -170,14 +171,11 @@ const checkForRotation = (queue) => {
 	}
 };
 
-const checkForClick = (queue) => {
-	if (queue.length > 1) {
-		let pinData = queue.slice(queue.length - 3, queue.length - 1).map(i => i.sw);
+const checkForClick = () => {
+	const queue = pinQueue.slice();
 
-		// Ignored key down.
-		// if (equals(pinData, [1, 0])) {
-		// 	return true;
-		// }
+	if (queue.length >= 2) {
+		let pinData = queue.slice(queue.length - 3, queue.length - 1).map(i => i.sw);
 
 		if (equals(pinData, [0, 1])) {
 			return true;
