@@ -27,7 +27,7 @@ class MainComponent extends ModuleComponent {
 			// this.module.router.off('remove', this._delRoute);
 		}
     }
-    
+
     _load() {
         this.module.client.get("audio.volume").then(m => {
             this.model = m;
@@ -78,13 +78,13 @@ class MainComponent extends ModuleComponent {
                 n.component('volume', new ModelInput(this.model, (m, e) => {
                     e.setDisabled(m.mute);
                     return m.volume.toString();
-                }, { 
-                    attributes: { 
+                }, {
+                    attributes: {
                         type: 'range',
                         min: 0,
                         max: 100,
                         step: 1
-                    }, 
+                    },
                     events: {
                         input: (_, ev) => {
                             this._setVolume(parseInt(ev.target.value));
@@ -129,17 +129,17 @@ class MainComponent extends ModuleComponent {
         if (!dir) {
             new_volume = val;
         } else if (dir === 'up') {
-            if (new_volume + val <= 100) {
-                new_volume += val;
-            } else {
-                new_volume = 100;
-            }
+            new_volume += val;
         } else if (dir === 'down') {
-            if (new_volume - val >= 0) {
-                new_volume -= val;
-            } else {
-                new_volume = 0;
-            }
+            new_volume -= val;
+        }
+
+        if (new_volume > 100) {
+            new_volume = 100;
+        }
+
+        if (new_volume < 0) {
+            new_volume = 0;
         }
 
         this.model.set({ volume: new_volume });
@@ -154,7 +154,7 @@ class MainComponent extends ModuleComponent {
 
 		this._setListeners(true);
         this.node.render(el);
-        
+
         this._load();
 	}
 
