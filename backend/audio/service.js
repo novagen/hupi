@@ -8,6 +8,17 @@ import rpio from 'rpio';
 const nats = new Service("Audio", Service.getNatsConfig(config)).connect();
 const portAudio = require('naudiodon');
 
+const volumeModel = {
+	volume: 50,
+	mute: false
+};
+
+const clkUp = [0, 0, 1, 1];
+const dtUp = [1, 0, 0, 1];
+
+const clkDown = [1, 0, 0, 1];
+const dtDown = [0, 0, 1, 1];
+
 const equals = (current, array) => {
 	if (!array) {
 		return false;
@@ -30,7 +41,7 @@ const equals = (current, array) => {
 	return true;
 };
 
-let pins = {
+const lastPinValues = {
 	clk: null,
 	dt: null,
 	sw: null
@@ -42,7 +53,7 @@ const listenOnRotaryEnconder = () => {
 	initPins();
 
 	var polling = AsyncPolling((end) => {
-		doRotaryEncoderPoll((error, response) => {
+		pollEncoder((error, response) => {
 			if (error) {
 				end(error);
 				return;
@@ -75,7 +86,7 @@ const listenOnRotaryEnconder = () => {
 	polling.run();
 };
 
-const doRotaryEncoderPoll = (cb) => {
+const pollEncoder = (cb) => {
 	let changed = false;
 
 	try {
@@ -83,18 +94,18 @@ const doRotaryEncoderPoll = (cb) => {
 		let dt = rpio.read(12);
 		let sw = rpio.read(13);
 
-		if (pins.clk != clk) {
-			pins.clk = clk;
+		if (lastPinValues.clk != clk) {
+			lastPinValues.clk = clk;
 			changed = true;
 		}
 
-		if (pins.dt != dt) {
-			pins.dt = dt;
+		if (lastPinValues.dt != dt) {
+			lastPinValues.dt = dt;
 			changed = true;
 		}
 
-		if (pins.sw != sw) {
-			pins.sw = sw;
+		if (lastPinValues.sw != sw) {
+			lastPinValues.sw = sw;
 			changed = true;
 		}
 
@@ -112,33 +123,27 @@ const doRotaryEncoderPoll = (cb) => {
 };
 
 const getRotaryEvent = () => {
-	let clearQueue = false;
-
 	if (pinQueue.length == 4) {
 		let rotation = checkForRotation(pinQueue);
 		if (rotation.changed) {
 			changeVolume(rotation.direction);
-			clearQueue = true;
+			clearQueue();
+			return;
 		}
 	}
 
 	if (pinQueue.length >= 2) {
 		if (checkForClick(pinQueue)) {
 			toggleMute();
-			clearQueue = true;
+			clearQueue();
+			return;
 		}
-	}
-
-	if (clearQueue) {
-		pinQueue = [];
 	}
 };
 
-const clkUp = [0, 0, 1, 1];
-const dtUp = [1, 0, 0, 1];
-
-const clkDown = [1, 0, 0, 1];
-const dtDown = [0, 0, 1, 1];
+const clearQueue = () => {
+	pinQueue = [];
+};
 
 const checkForRotation = (queue) => {
 	if (queue.length == 4) {
@@ -220,30 +225,6 @@ const getAudioDevices = () => {
 	return devices;
 };
 
-nats.subscribe('get.audio.device.*', function (_, reply, subj) {
-	let id = subj.substring(17);
-
-	getAudioModel(id).then(model => {
-		if (model) {
-			nats.publish(reply, JSON.stringify({
-				result: {
-					model
-				}
-			}));
-		} else {
-			nats.publish(reply, Constants.notFound);
-		}
-	}).catch(e => {
-		Logger.Error(e);
-		nats.publish(reply, Constants.internalError(JSON.stringify(e)));
-	});
-});
-
-const volumeModel = {
-	volume: 50,
-	mute: false
-};
-
 const toggleMute = () => {
 	let muted = {
 		mute : !volumeModel.mute
@@ -294,6 +275,25 @@ const changeVolume = (dir) => {
 		}));
 	}	
 };
+
+nats.subscribe('get.audio.device.*', function (_, reply, subj) {
+	let id = subj.substring(17);
+
+	getAudioModel(id).then(model => {
+		if (model) {
+			nats.publish(reply, JSON.stringify({
+				result: {
+					model
+				}
+			}));
+		} else {
+			nats.publish(reply, Constants.notFound);
+		}
+	}).catch(e => {
+		Logger.Error(e);
+		nats.publish(reply, Constants.internalError(JSON.stringify(e)));
+	});
+});
 
 nats.subscribe('call.audio.volume.set', (req, reply) => {
 	const params = JSON.parse(req);
