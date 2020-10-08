@@ -103,19 +103,42 @@ const getRotaryEvent = () => {
 	}
 };
 
+const clkUp = [ 0, 0, 1, 1 ];
+const dtUp = [ 1, 0, 0, 1 ];
+
+const clkDown = [ 1, 0, 0, 1 ];
+const dtDown = [ 0, 0, 1, 1 ];
+
 const checkForRotation = (queue) => {
 	if (queue.length == 4) {
 		let clks = queue.map(i => i.clk);
 		let dts = queue.map(i => i.dt);
 
-		console.log('rotation', clks, dts);
+		if (clks == clkUp && dts == dtUp) {
+			console.log('rotation up');
+			return;
+		}
+
+		if (clks == clkDown && dts == dtDown) {
+			console.log('rotation down');
+			return;
+		}
 	}
 };
 
 const checkForClick = (queue) => {
 	if (queue.length > 1) {
 		let pinData = queue.slice(queue.length - 3, queue.length - 1).map(i => i.sw);
-		console.log('click', pinData);
+
+		if (pinData == [ 1, 0 ]) {
+			console.log('click up');
+			return;
+		}
+
+		if (pinData == [ 0, 1 ]) {
+			console.log('click down');
+			return;
+		}
 	}
 };
 
