@@ -1,6 +1,6 @@
 import path from 'path';
 import fs from 'fs';
-import { Merger } from 'wace-admin-support';
+import Merger from './merger';
 
 let config = {
 	nats: {
