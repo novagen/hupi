@@ -128,14 +128,12 @@ const getRotaryEvent = () => {
 	if (rotation.changed) {
 		Logger.Debug("rotation");
 		changeVolume(rotation.direction);
-		clearQueue();
 		return;
 	}
 
 	if (checkForClick(pinQueue)) {
 		Logger.Debug("click");
 		toggleMute();
-		clearQueue();
 		return;
 	}
 };
