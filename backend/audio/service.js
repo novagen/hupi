@@ -8,16 +8,24 @@ import rpio from 'rpio';
 const nats = new Service("Audio", Service.getNatsConfig(config)).connect();
 const portAudio = require('naudiodon');
 
+const clkPin = 11;
+const dtPin = 12;
+const swPin = 13;
+const pollingInterval = 2;
+
+// Pin change orders to detect events.
+const clkUp = [0, 0, 1, 1];
+const dtUp = [1, 0, 0, 1];
+const clkDown = [1, 0, 0, 1];
+const dtDown = [0, 0, 1, 1];
+
+let rotationQueue = [];
+let clickQueue = [];
+
 const volumeModel = {
 	volume: 50,
 	mute: false
 };
-
-const clkUp = [0, 0, 1, 1];
-const dtUp = [1, 0, 0, 1];
-
-const clkDown = [1, 0, 0, 1];
-const dtDown = [0, 0, 1, 1];
 
 const equals = (current, array) => {
 	if (!array) {
@@ -47,9 +55,6 @@ const lastPinValues = {
 	sw: null
 };
 
-let rotationQueue = [];
-let clickQueue = [];
-
 const listenOnRotaryEnconder = () => {
 	initPins();
 
@@ -62,7 +67,7 @@ const listenOnRotaryEnconder = () => {
 
 			end(null, response);
 		});
-	}, 5);
+	}, pollingInterval);
 
 	polling.on('error', function (error) {
 		Logger.Error(error);
@@ -80,34 +85,13 @@ const listenOnRotaryEnconder = () => {
 	polling.run();
 };
 
-const addRotationQueue = (item) => {
-	let length = rotationQueue.push({
-		clk: item.clk,
-		dt: item.dt
-	});
-
-	if (length > 4) {
-		rotationQueue.shift();
-	}
-};
-
-const addClickQueue = (item) => {
-	let length = clickQueue.push({
-		sw: item.sw
-	});
-
-	if (length > 2) {
-		clickQueue.shift();
-	}
-};
-
 const pollEncoder = (cb) => {
 	let changed = false;
 
 	try {
-		let clk = rpio.read(11);
-		let dt = rpio.read(12);
-		let sw = rpio.read(13);
+		let clk = rpio.read(clkPin);
+		let dt = rpio.read(dtPin);
+		let sw = rpio.read(swPin);
 
 		if (lastPinValues.clk != clk) {
 			lastPinValues.clk = clk;
@@ -152,6 +136,27 @@ const getRotaryEvent = () => {
 		clearClickQueue();
 		toggleMute();
 		return;
+	}
+};
+
+const addRotationQueue = (item) => {
+	let length = rotationQueue.push({
+		clk: item.clk,
+		dt: item.dt
+	});
+
+	if (length > 4) {
+		rotationQueue.shift();
+	}
+};
+
+const addClickQueue = (item) => {
+	let length = clickQueue.push({
+		sw: item.sw
+	});
+
+	if (length > 2) {
+		clickQueue.shift();
 	}
 };
 
@@ -205,9 +210,9 @@ const checkForClick = () => {
 };
 
 const initPins = () => {
-	rpio.open(11, rpio.INPUT);
-	rpio.open(12, rpio.INPUT);
-	rpio.open(13, rpio.INPUT);
+	rpio.open(clkPin, rpio.INPUT);
+	rpio.open(dtPin, rpio.INPUT);
+	rpio.open(swPin, rpio.INPUT);
 };
 
 const getAudioModel = id => {
@@ -262,7 +267,7 @@ const changeVolume = (dir) => {
 	if (volumeModel.mute) {
 		return;
 	}
-	
+
 	let new_volume = volumeModel.volume;
 	let val = 5;
 
