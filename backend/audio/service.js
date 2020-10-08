@@ -69,19 +69,19 @@ const changeVolume = (dir) => {
 	let new_volume = volumeModel.volume;
 
 	if (dir === 'up') {
-		if (new_volume + stepSize < 100) {
-			new_volume += stepSize;
-		} else {
-			new_volume = stepSize;
-		}
+		new_volume += stepSize;
 	} else if (dir === 'down') {
-		if (new_volume - stepSize > 0) {
-			new_volume -= stepSize;
-		} else {
-			new_volume = 0;
-		}
+		new_volume -= stepSize;
 	} else {
 		return;
+	}
+
+	if (new_volume > 100) {
+		new_volume = 100;
+	}
+
+	if (new_volume < 0) {
+		new_volume = 0;
 	}
 
 	let volume = {
