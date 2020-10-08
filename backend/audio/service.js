@@ -125,14 +125,12 @@ const getRotaryEvent = () => {
 	let rotation = checkForRotation();
 
 	if (rotation.changed) {
-		Logger.Debug("rotation");
 		clearRotationQueue();
 		changeVolume(rotation.direction);
 		return;
 	}
 
 	if (checkForClick()) {
-		Logger.Debug("click");
 		clearClickQueue();
 		toggleMute();
 		return;
