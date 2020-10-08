@@ -8,6 +8,11 @@ import rpio from 'rpio';
 const nats = new Service("Audio", Service.getNatsConfig(config)).connect();
 const portAudio = require('naudiodon');
 
+let pins = {
+	clk: null,
+	dt: null
+};
+
 const listenOnRotaryEnconder = () => {
 	initPins();
 
@@ -20,7 +25,7 @@ const listenOnRotaryEnconder = () => {
 			
 			end(null, response);
 		});
-	}, 3000);
+	}, 10);
 
 	polling.on('error', function (error) {
 		// The polling encountered an error, handle it here.
@@ -29,7 +34,7 @@ const listenOnRotaryEnconder = () => {
 
 	polling.on('result', function (result) {
 		// The polling yielded some result, process it here.
-		//console.log(result);
+		console.log(result);
 	});
 
 	// Let's start polling.
@@ -41,10 +46,21 @@ const doRotaryEncoderPoll = (cb) => {
 		throw new Error("Missing callback");
 	}
 
-	console.log(rpio.read(11) + ' : ' + rpio.read(12));
+	let changed = false;
+	let clk = rpio.read(11);
+	let dt = rpio.read(12);
 
+	if (pins.clk != clk) {
+		pins.clk = clk;
+		changed = true;
+	}
 
-	cb(null, "response");
+	if (pins.dt != dt) {
+		pins.dt = dt;
+		changed = true;
+	}
+	
+	cb(null, changed ? pins : null);
 };
 
 const initPins = () => {
