@@ -15,6 +15,8 @@ let pins = {
 	changed: false
 };
 
+let pinQueue = [];
+
 const listenOnRotaryEnconder = () => {
 	initPins();
 
@@ -35,7 +37,8 @@ const listenOnRotaryEnconder = () => {
 
 	polling.on('result', function (result) {
 		if (result.changed) {
-			getRotaryEvent(result);
+			pinQueue.push(result);
+			getRotaryEvent();
 		}
 	});
 
@@ -72,11 +75,9 @@ const doRotaryEncoderPoll = (cb) => {
 	cb(null, pins);
 };
 
-let pinQueue = [];
-
-const getRotaryEvent = (pin) => {
-	pinQueue.push(pin);
-
+const getRotaryEvent = () => {
+	console.log(pinQueue);
+	
 	if (pinQueue.length > 4) {
 		pinQueue.shift();
 	}
