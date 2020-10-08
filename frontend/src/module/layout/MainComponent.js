@@ -6,8 +6,8 @@ import { ModelTxt } from 'modapp-resource-component';
 import './MainComponent.scss';
 
 const menuSorter = (a, b) => {
-	let ao = typeof(a.order) === 'number' ? a.order : -1,
-		bo = typeof(b.order) === 'number' ? b.order : -1;
+	let ao = typeof (a.order) === 'number' ? a.order : -1,
+		bo = typeof (b.order) === 'number' ? b.order : -1;
 
 	if (ao === bo) {
 		return a.name.localeCompare(b.name);
@@ -22,27 +22,12 @@ const menuSorter = (a, b) => {
 };
 
 class MainComponent extends ModuleComponent {
-	constructor(app, module) {
+	constructor(app, module, params) {
 		super('module.layout.main', module);
 
 		this.app = app;
 		this.module = module;
-
-		this._gotoPage = this._gotoPage.bind(this);
-
-		this.model = new Model({
-			eventBus: this.app.eventBus,
-			namespace: 'layout.model',
-			definition: {
-				expanded: {
-					type: 'boolean',
-					default: false
-				}
-			},
-			data: {
-				expanded: false
-			}
-		});
+		this.params = params;
 
 		this.navigation = new Collection({
 			namespace: 'navigation',
@@ -51,33 +36,27 @@ class MainComponent extends ModuleComponent {
 			compare: menuSorter
 		});
 
+		this._gotoPage = this._gotoPage.bind(this);
 		this._addNavigation = this._addNavigation.bind(this);
 		this._delNavigation = this._delNavigation.bind(this);
 		this._addRoute = this._addRoute.bind(this);
 		this._delRoute = this._delRoute.bind(this);
-		this._setRoute = this._setRoute.bind(this);
 
 		this._setListeners = this._setListeners.bind(this);
 	}
 
 	_setListeners(on) {
 		if (on) {
-			this.module.router.on('set', this._setRoute);
 			this.module.router.on('add', this._addRoute);
 			this.module.router.on('remove', this._delRoute);
 		} else {
-			this.module.router.off('set', this._setRoute);
-			this.module.router.off('add', this.addRoute);
-			this.module.router.off('remove', this.delRoute);
+			this.module.router.off('add', this._addRoute);
+			this.module.router.off('remove', this._delRoute);
 		}
 	}
 
 	_gotoPage(page) {
-		this.model.set({ expanded: false });
 		this.module.router.setRoute(page);
-	}
-
-	_setRoute() {
 	}
 
 	_addRoute(route) {
@@ -135,19 +114,28 @@ class MainComponent extends ModuleComponent {
 	}
 
 	render(el) {
-		this.node = new Elem(n => n.elem("div", { className: "icons" }, [
-			n.component("list", new CollectionList(this.navigation, m => {
-				return new ModelTxt(m, (m) => this.t(`menu.item.${m.name}`), {
-					events: {
-						click: () => {
-							this._gotoPage(m.id);
-						}
-					},
-					tagName: "a",
-					className: 'item'
-				});
-			}))
-		]));
+		this.node = new Elem(n => n.component("list", new CollectionList(this.navigation, m => {
+			return new Elem(e => e.elem('div', {
+				events: {
+					click: () => {
+						this._gotoPage(m.id);
+					}
+				}
+			}, [
+				e.elem('span', {
+					className: 'fas fa-check'
+				}),
+				e.component(new ModelTxt(m, m => this.t(`menu.item.${m.name}`), {
+					tagName: "span",
+					className: ''
+				}))
+			]));
+		}, {
+			className: "grid-x main-items",
+			tagName: 'div',
+			subTagName: 'div',
+			subClassName: m => 'cell small-3 item icon_' + m.id
+		})));
 
 		this._initNavigation();
 		this._setListeners(true);

@@ -35,12 +35,14 @@
     "node-sass": "^4.14.1",
     "sass-loader": "^10.0.2",
     "style-loader": "^1.2.1",
+    "url-loader": "^4.1.0",
     "webpack": "^4.44.2",
     "webpack-cli": "^3.3.12",
     "webpack-dev-middleware": "^3.7.2",
     "what-input": "^5.2.10"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.15.1",
     "foundation-sites": "^6.6.3",
     "i18next": "^19.7.0",
     "i18next-browser-languagedetector": "^6.0.1",
