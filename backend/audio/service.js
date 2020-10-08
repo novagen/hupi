@@ -147,12 +147,12 @@ const clearQueue = () => {
 const checkForRotation = () => {
 	const queue = pinQueue.slice();
 
+	let changed = false;
+	let direction = 'none';
+
 	if (queue.length >= 4) {
 		let clks = queue.map(i => i.clk);
 		let dts = queue.map(i => i.dt);
-
-		let changed = false;
-		let direction = 'none';
 
 		if (equals(clks, clkUp) && equals(dts, dtUp)) {
 			changed = true;
@@ -163,12 +163,12 @@ const checkForRotation = () => {
 			changed = true;
 			direction = 'down';
 		}
-
-		return {
-			changed,
-			direction
-		};
 	}
+
+	return {
+		changed,
+		direction
+	};
 };
 
 const checkForClick = () => {
@@ -180,9 +180,9 @@ const checkForClick = () => {
 		if (equals(pinData, [0, 1])) {
 			return true;
 		}
-
-		return false;
 	}
+
+	return false;
 };
 
 const initPins = () => {
