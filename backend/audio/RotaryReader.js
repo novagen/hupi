@@ -12,10 +12,16 @@ const swPin = 13;
 const pollingInterval = 2;
 
 class RotaryReader {
-    constructor(onRotation, onClick, logger) {
-        this.onRotation = onRotation;
-        this.onClick = onClick;
-        this.logger = logger;
+    constructor(opt) {
+        this.opt = Object.assign({
+			onRotation: () => {},
+            onClick: () => {},
+            onError: () => {},
+            clkPin: clkPin,
+            dtPin: dtPin,
+            swPin: swPin,
+            pollingInterval: pollingInterval
+		}, opt);
 
         this.lastPinValues = {
             clk: null,
@@ -39,13 +45,13 @@ class RotaryReader {
     
                 end(null, response);
             });
-        }, pollingInterval);
+        }, this.opt.pollingInterval);
     
-        this.polling.on('error', function (error) {
-            this.logger.Error(error);
+        this.polling.on('error', (error) => {
+            this.opt.onError(error);
         });
     
-        this.polling.on('result', function (result) {
+        this.polling.on('result', (result) => {
             if (result.changed) {
                 this.addRotationQueue(result);
                 this.addClickQueue(result);
@@ -61,9 +67,9 @@ class RotaryReader {
         let changed = false;
     
         try {
-            let clk = rpio.read(clkPin);
-            let dt = rpio.read(dtPin);
-            let sw = rpio.read(swPin);
+            let clk = rpio.read(this.opt.clkPin);
+            let dt = rpio.read(this.opt.dtPin);
+            let sw = rpio.read(this.opt.swPin);
     
             if (this.lastPinValues.clk != clk) {
                 this.lastPinValues.clk = clk;
@@ -98,13 +104,13 @@ class RotaryReader {
     
         if (rotation.changed) {
             this.clearRotationQueue();
-            this.onRotation(rotation.direction);
+            this.opt.onRotation(rotation.direction);
             return;
         }
     
         if (this.checkForClick()) {
             this.clearClickQueue();
-            this.onClick();
+            this.opt.onClick();
             return;
         }
     }
@@ -202,9 +208,9 @@ class RotaryReader {
     }
        
     initPins() {
-        rpio.open(clkPin, rpio.INPUT);
-        rpio.open(dtPin, rpio.INPUT);
-        rpio.open(swPin, rpio.INPUT);
+        rpio.open(this.opt.clkPin, rpio.INPUT);
+        rpio.open(this.opt.dtPin, rpio.INPUT);
+        rpio.open(this.opt.swPin, rpio.INPUT);
     }
 }
 

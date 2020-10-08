@@ -161,4 +161,8 @@ nats.subscribe('get.audio.devices', function (_, reply) {
 
 nats.publish('system.reset', JSON.stringify({ resources: ['audio.>'] }));
 
-new RotaryReader((dir) => { changeVolume(dir); }, () => { toggleMute(); }, Logger).start();
+new RotaryReader({
+	onRotation: (dir) => { changeVolume(dir); }, 
+	onClick: () => { toggleMute(); },
+	onError: (err) => { Logger.Error(err); }
+}).start();
