@@ -65,7 +65,9 @@ class MainComponent extends ModuleComponent {
                     }
                 } }, [
                     c.elem('span', { className: 'fas fa-fw fa-lg fa-volume-down' })
-                ]))))
+                ])), (_, e) => {
+                    e.setDisabled(m.mute);
+                }))
             ]),
             n.elem('div', { className: 'volume-slider'}, [
                 n.component('volume', new ModelInput(this.model, (m, e) => {
@@ -92,7 +94,9 @@ class MainComponent extends ModuleComponent {
                     }
                 } }, [
                     c.elem('span', { className: 'fas fa-fw fa-lg fa-volume-up' })
-                ]))))
+                ])), (_, e) => {
+                    e.setDisabled(m.mute);
+                }))
             ])
         ]));
 
