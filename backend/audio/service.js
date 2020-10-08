@@ -259,6 +259,10 @@ const toggleMute = () => {
 };
 
 const changeVolume = (dir) => {
+	if (volumeModel.mute) {
+		return;
+	}
+	
 	let new_volume = volumeModel.volume;
 	let val = 5;
 
