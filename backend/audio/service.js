@@ -11,8 +11,7 @@ const portAudio = require('naudiodon');
 let pins = {
 	clk: null,
 	dt: null,
-	sw: null,
-	changed: false
+	sw: null
 };
 
 let pinQueue = [];
@@ -36,8 +35,21 @@ const listenOnRotaryEnconder = () => {
 	});
 
 	polling.on('result', function (result) {
+		// ignore if no changes occurred
 		if (result.changed) {
-			pinQueue.push(result);
+			// add last changes to the queue
+			let length = pinQueue.push({
+				clk: result.clk,
+				dt: result.dt,
+				sw: result.sw
+			});
+
+			// make sure the queue is never longer than 4
+			if (length > 4) {
+				pinQueue.shift();
+			}
+
+			// check for events
 			getRotaryEvent();
 		}
 	});
@@ -46,42 +58,42 @@ const listenOnRotaryEnconder = () => {
 };
 
 const doRotaryEncoderPoll = (cb) => {
-	if (!cb) {
-		throw new Error("Missing callback");
-	}
-
 	let changed = false;
 
-	let clk = rpio.read(11);
-	let dt = rpio.read(12);
-	let sw = rpio.read(13);
+	try {
+		let clk = rpio.read(11);
+		let dt = rpio.read(12);
+		let sw = rpio.read(13);
 
-	if (pins.clk != clk) {
-		pins.clk = clk;
-		changed = true;
+		if (pins.clk != clk) {
+			pins.clk = clk;
+			changed = true;
+		}
+
+		if (pins.dt != dt) {
+			pins.dt = dt;
+			changed = true;
+		}
+
+		if (pins.sw != sw) {
+			pins.sw = sw;
+			changed = true;
+		}
+
+		let response = {
+			clk,
+			dt,
+			sw,
+			changed
+		};
+
+		cb(null, response);
+	} catch (e) {
+		cb(e, null);
 	}
-
-	if (pins.dt != dt) {
-		pins.dt = dt;
-		changed = true;
-	}
-
-	if (pins.sw != sw) {
-		pins.sw = sw;
-		changed = true;
-	}
-
-	pins.changed = changed;
-	cb(null, pins);
 };
 
 const getRotaryEvent = () => {
-	console.log(pinQueue);
-	
-	if (pinQueue.length > 4) {
-		pinQueue.shift();
-	}
-
 	if (pinQueue.length == 4) {
 		checkForRotation(pinQueue);
 	}
