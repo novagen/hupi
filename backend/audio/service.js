@@ -47,7 +47,8 @@ const lastPinValues = {
 	sw: null
 };
 
-let pinQueue = [];
+let rotationQueue = [];
+let clickQueue = [];
 
 const listenOnRotaryEnconder = () => {
 	initPins();
@@ -69,21 +70,38 @@ const listenOnRotaryEnconder = () => {
 
 	polling.on('result', function (result) {
 		if (result.changed) {
-			let length = pinQueue.push({
-				clk: result.clk,
-				dt: result.dt,
-				sw: result.sw
-			});
-
-			if (length > 4) {
-				pinQueue.shift();
-			}
+			addRotationQueue(result);
+			addClickQueue(result);
 
 			getRotaryEvent();
 		}
 	});
 
 	polling.run();
+};
+
+const addRotationQueue = (item) => {
+	let length = rotationQueue.push({
+		clk: item.clk,
+		dt: item.dt,
+		sw: item.sw
+	});
+
+	if (length > 4) {
+		rotationQueue.shift();
+	}
+};
+
+const addClickQueue = (item) => {
+	let length = clickQueue.push({
+		clk: item.clk,
+		dt: item.dt,
+		sw: item.sw
+	});
+
+	if (length > 2) {
+		clickQueue.shift();
+	}
 };
 
 const pollEncoder = (cb) => {
@@ -123,32 +141,38 @@ const pollEncoder = (cb) => {
 };
 
 const getRotaryEvent = () => {
-	let rotation = checkForRotation(pinQueue);
+	let rotation = checkForRotation();
 
 	if (rotation.changed) {
 		Logger.Debug("rotation");
+		clearRotationQueue();
 		changeVolume(rotation.direction);
 		return;
 	}
 
-	if (checkForClick(pinQueue)) {
+	if (checkForClick()) {
 		Logger.Debug("click");
+		clearClickQueue();
 		toggleMute();
 		return;
 	}
 };
 
-const clearQueue = () => {
-	pinQueue = [];
+const clearRotationQueue = () => {
+	rotationQueue = [];
+};
+
+const clearClickQueue = () => {
+	rotationQueue = [];
 };
 
 const checkForRotation = () => {
-	const queue = pinQueue.slice();
+	const queue = rotationQueue.slice();
 
 	let changed = false;
 	let direction = 'none';
 
-	if (queue.length >= 4) {
+	if (queue.length == 4) {
 		let clks = queue.map(i => i.clk);
 		let dts = queue.map(i => i.dt);
 
@@ -170,9 +194,9 @@ const checkForRotation = () => {
 };
 
 const checkForClick = () => {
-	const queue = pinQueue.slice();
+	const queue = clickQueue.slice();
 
-	if (queue.length >= 2) {
+	if (queue.length == 2) {
 		let pinData = queue.slice(queue.length - 3, queue.length - 1).map(i => i.sw);
 
 		if (equals(pinData, [0, 1])) {
