@@ -10,7 +10,9 @@ const portAudio = require('naudiodon');
 
 let pins = {
 	clk: null,
-	dt: null
+	dt: null,
+	sw: null,
+	changed: false
 };
 
 const listenOnRotaryEnconder = () => {
@@ -22,7 +24,7 @@ const listenOnRotaryEnconder = () => {
 				end(error);
 				return;
 			}
-			
+
 			end(null, response);
 		});
 	}, 10);
@@ -34,7 +36,9 @@ const listenOnRotaryEnconder = () => {
 
 	polling.on('result', function (result) {
 		// The polling yielded some result, process it here.
-		console.log(result);
+		if (result.changed) {
+			console.log(result);
+		}
 	});
 
 	// Let's start polling.
@@ -47,8 +51,10 @@ const doRotaryEncoderPoll = (cb) => {
 	}
 
 	let changed = false;
+
 	let clk = rpio.read(11);
 	let dt = rpio.read(12);
+	let sw = rpio.read(13);
 
 	if (pins.clk != clk) {
 		pins.clk = clk;
@@ -59,15 +65,20 @@ const doRotaryEncoderPoll = (cb) => {
 		pins.dt = dt;
 		changed = true;
 	}
-	
-	if (changed) {
-		cb(null, pins);
+
+	if (pins.sw != sw) {
+		pins.sw = sw;
+		changed = true;
 	}
+
+	pins.changed = changed;
+	cb(null, pins);
 };
 
 const initPins = () => {
 	rpio.open(11, rpio.INPUT);
 	rpio.open(12, rpio.INPUT);
+	rpio.open(13, rpio.INPUT);
 };
 
 const getAudioModel = id => {
