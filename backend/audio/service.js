@@ -117,7 +117,10 @@ const doRotaryEncoderPoll = (cb) => {
 
 const getRotaryEvent = () => {
 	if (pinQueue.length == 4) {
-		checkForRotation(pinQueue);
+		let rotation = checkForRotation(pinQueue);
+		if (rotation.changed) {
+			changeVolume(rotation.direction);
+		}
 	}
 
 	if (pinQueue.length >= 2) {
@@ -138,21 +141,21 @@ const checkForRotation = (queue) => {
 		let clks = queue.map(i => i.clk);
 		let dts = queue.map(i => i.dt);
 
-		let rotation = false;
+		let changed = false;
 		let direction = 'none';
 
 		if (equals(clks, clkUp) && equals(dts, dtUp)) {
-			rotation = true;
+			changed = true;
 			direction = 'up';
 		}
 
 		if (equals(clks, clkDown) && equals(dts, dtDown)) {
-			rotation = true;
+			changed = true;
 			direction = 'down';
 		}
 
 		return {
-			rotation,
+			changed,
 			direction
 		};
 	}
@@ -252,6 +255,41 @@ const toggleMute = () => {
 			values: changed
 		}));
 	}
+};
+
+const changeVolume = (dir) => {
+	let new_volume = volumeModel.volume;
+	let val = 5;
+
+	if (dir === 'up') {
+		if (new_volume + val <= 100) {
+			new_volume += val;
+		} else {
+			new_volume = 100;
+		}
+	} else if (dir === 'down') {
+		if (new_volume - val >= 0) {
+			new_volume -= val;
+		} else {
+			new_volume = 0;
+		}
+	} else {
+		return;
+	}
+
+	let volume = {
+		volume : new_volume
+	};
+
+	const changed = diff(volumeModel, volume);
+
+	if (changed && Object.keys(changed).length) {
+		Object.assign(volumeModel, changed);
+
+		nats.publish("event.audio.volume.change", JSON.stringify({
+			values: changed
+		}));
+	}	
 };
 
 nats.subscribe('call.audio.volume.set', (req, reply) => {
