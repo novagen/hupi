@@ -64,7 +64,7 @@ const listenOnRotaryEnconder = () => {
 	}, 5);
 
 	polling.on('error', function (error) {
-		Logger.error(error);
+		Logger.Error(error);
 	});
 
 	polling.on('result', function (result) {
