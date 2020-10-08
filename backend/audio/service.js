@@ -71,8 +71,41 @@ const doRotaryEncoderPoll = (cb) => {
 		changed = true;
 	}
 
+	if (changed) {
+		getRotaryEvent(pins);
+	}
+
 	pins.changed = changed;
 	cb(null, pins);
+};
+
+let pinQueue = [];
+
+const getRotaryEvent = (pin) => {
+	pinQueue.push(pin);
+
+	if (pinQueue.length > 4) {
+		pinQueue.shift();
+	}
+
+	checkForRotation();
+	checkForClick();
+};
+
+const checkForRotation = () => {
+	if (pinQueue.length == 4) {
+		let clks = pinQueue.map(i => i.clk);
+		let dts = pinQueue.map(i => i.dt);
+
+		console.log(clks, dts);
+	}
+};
+
+const checkForClick = () => {
+	if (pinQueue.length > 1) {
+		let pinData = pinQueue.slice(pinQueue.length - 3, pinQueue.length - 1).map(i => i.sw);
+		console.log(pinData);
+	}
 };
 
 const initPins = () => {
