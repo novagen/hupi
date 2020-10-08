@@ -60,7 +60,9 @@ const doRotaryEncoderPoll = (cb) => {
 		changed = true;
 	}
 	
-	cb(null, changed ? pins : null);
+	if (changed) {
+		cb(null, pins);
+	}
 };
 
 const initPins = () => {
