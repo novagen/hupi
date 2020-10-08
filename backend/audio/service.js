@@ -83,8 +83,7 @@ const listenOnRotaryEnconder = () => {
 const addRotationQueue = (item) => {
 	let length = rotationQueue.push({
 		clk: item.clk,
-		dt: item.dt,
-		sw: item.sw
+		dt: item.dt
 	});
 
 	if (length > 4) {
@@ -94,8 +93,6 @@ const addRotationQueue = (item) => {
 
 const addClickQueue = (item) => {
 	let length = clickQueue.push({
-		clk: item.clk,
-		dt: item.dt,
 		sw: item.sw
 	});
 
@@ -197,7 +194,7 @@ const checkForClick = () => {
 	const queue = clickQueue.slice();
 
 	if (queue.length == 2) {
-		let pinData = queue.slice(queue.length - 3, queue.length - 1).map(i => i.sw);
+		let pinData = queue.map(i => i.sw);
 
 		if (equals(pinData, [0, 1])) {
 			return true;
