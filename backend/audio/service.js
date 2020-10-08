@@ -2,9 +2,55 @@ import config from '../config';
 import diff from 'object-diff';
 import { Logger } from 'wace-admin-support';
 import { Service, Constants } from 'wace-admin-service';
+import AsyncPolling from 'async-polling';
+import rpio from 'rpio';
 
 const nats = new Service("Audio", Service.getNatsConfig(config)).connect();
 const portAudio = require('naudiodon');
+
+const listenOnRotaryEnconder = () => {
+	initPins();
+
+	var polling = AsyncPolling((end) => {
+		doRotaryEncoderPoll((error, response) => {
+			if (error) {
+				end(error);
+				return;
+			}
+			
+			end(null, response);
+		});
+	}, 3000);
+
+	polling.on('error', function (error) {
+		// The polling encountered an error, handle it here.
+		console.log(error);
+	});
+
+	polling.on('result', function (result) {
+		// The polling yielded some result, process it here.
+		//console.log(result);
+	});
+
+	// Let's start polling.
+	polling.run(); 
+};
+
+const doRotaryEncoderPoll = (cb) => {
+	if (!cb) {
+		throw new Error("Missing callback");
+	}
+
+	console.log(rpio.read(11) + ' : ' + rpio.read(12));
+
+
+	cb(null, "response");
+};
+
+const initPins = () => {
+	rpio.open(11, rpio.INPUT);
+	rpio.open(12, rpio.INPUT);
+};
 
 const getAudioModel = id => {
 	return new Promise((resolve, reject) => {
@@ -86,3 +132,4 @@ nats.subscribe('get.audio.devices', function(_, reply) {
 });
 
 nats.publish('system.reset', JSON.stringify({ resources: [ 'audio.>' ] }));
+listenOnRotaryEnconder();
