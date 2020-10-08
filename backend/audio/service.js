@@ -6,6 +6,7 @@ import RotaryReader from './RotaryReader';
 
 const nats = new Service("Audio", Service.getNatsConfig(config)).connect();
 const portAudio = require('naudiodon');
+const stepSize = 2;
 
 const volumeModel = {
 	volume: 50,
@@ -66,17 +67,16 @@ const changeVolume = (dir) => {
 	}
 
 	let new_volume = volumeModel.volume;
-	let val = 5;
 
 	if (dir === 'up') {
-		if (new_volume + val <= 100) {
-			new_volume += val;
+		if (new_volume + stepSize <= 100) {
+			new_volume += stepSize;
 		} else {
-			new_volume = 100;
+			new_volume = stepSize;
 		}
 	} else if (dir === 'down') {
-		if (new_volume - val >= 0) {
-			new_volume -= val;
+		if (new_volume - stepSize >= 0) {
+			new_volume -= stepSize;
 		} else {
 			new_volume = 0;
 		}
