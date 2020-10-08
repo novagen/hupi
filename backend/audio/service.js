@@ -238,7 +238,7 @@ const volumeModel = {
 	mute: false
 };
 
-const toggleMute = () {
+const toggleMute = () => {
 	let muted = {
 		mute : !volumeModel.mute
 	};
@@ -252,7 +252,7 @@ const toggleMute = () {
 			values: changed
 		}));
 	}
-}
+};
 
 nats.subscribe('call.audio.volume.set', (req, reply) => {
 	const params = JSON.parse(req);
