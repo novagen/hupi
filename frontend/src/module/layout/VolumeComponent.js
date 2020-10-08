@@ -102,10 +102,10 @@ class MainComponent extends ModuleComponent {
     }
 
     _setVolume(val, dir) {
-        if (this.model.volume.mute) {
+        if (this.model.mute) {
             return;
         }
-        
+
         let new_volume = this.model.volume;
 
         if (val === null) {
