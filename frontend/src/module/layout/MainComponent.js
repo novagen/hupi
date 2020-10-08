@@ -6,8 +6,8 @@ import { ModelTxt } from 'modapp-resource-component';
 import './MainComponent.scss';
 
 const menuSorter = (a, b) => {
-	let ao = typeof(a.order) === 'number' ? a.order : -1,
-		bo = typeof(b.order) === 'number' ? b.order : -1;
+	let ao = typeof (a.order) === 'number' ? a.order : -1,
+		bo = typeof (b.order) === 'number' ? b.order : -1;
 
 	if (ao === bo) {
 		return a.name.localeCompare(b.name);
@@ -122,7 +122,9 @@ class MainComponent extends ModuleComponent {
 					}
 				}
 			}, [
-				e.elem('span', { className: 'fas fa-check' }),
+				e.elem('span', {
+					className: 'fas fa-check'
+				}),
 				e.component(new ModelTxt(m, m => this.t(`menu.item.${m.name}`), {
 					tagName: "span",
 					className: ''

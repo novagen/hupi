@@ -1,14 +1,14 @@
 .volume-grid {
-    display: flex;
-    
-    .volume-button {
-        &:first-of-type {
-            margin-right: 10px;
-        }
-    }
+	display: flex;
+
+	.volume-button {
+		&:first-of-type {
+			margin-right: 10px;
+		}
+	}
 
 	.volume-slider {
-        flex: 1;
-        padding: 10px;
+		flex: 1;
+		padding: 10px;
 	}
 }

@@ -2,7 +2,6 @@ import { Elem, Transition, Txt } from 'modapp-base-component';
 import { ModuleComponent } from 'component';
 import MainComponent from './MainComponent';
 import VolumeComponent from './VolumeComponent';
-
 class LayoutComponent extends ModuleComponent {
 
 	constructor(app, module, params, model) {
@@ -23,23 +22,32 @@ class LayoutComponent extends ModuleComponent {
 		this._setHomeButton = this._setHomeButton.bind(this);
 	}
 
-	_modelChanged() {
-	}
+	_modelChanged() {}
 
 	render(el) {
 		this.node = new Elem(n =>
-			n.elem('body', 'div', { className: 'body' }, [
-				n.elem('header', { }, [
-					n.elem('div', { }, [
+			n.elem('body', 'div', {
+				className: 'body'
+			}, [
+				n.elem('header', {}, [
+					n.elem('div', {}, [
 						n.component('home', new Transition())
 					])
 				]),
-				n.elem('main', { className: 'content' }, [
-					n.elem('div', { className: 'grid-y' }, [
-						n.elem('div', { className: 'cell' }, [
+				n.elem('main', {
+					className: 'content'
+				}, [
+					n.elem('div', {
+						className: 'grid-y'
+					}, [
+						n.elem('div', {
+							className: 'cell'
+						}, [
 							n.component('volume', new VolumeComponent(this.app, this.module, this.params.volume))
 						]),
-						n.elem('div', { className: 'cell' }, [
+						n.elem('div', {
+							className: 'cell'
+						}, [
 							n.component('main', new Transition())
 						])
 					]),
@@ -55,17 +63,23 @@ class LayoutComponent extends ModuleComponent {
 	}
 
 	_setHomeButton(isHome) {
-		if (!this.node) { return; }
+		if (!this.node) {
+			return;
+		}
 
 		let node = this.node.getNode("home");
-		if (!node) { return; }
+		if (!node) {
+			return;
+		}
 
 		let component = new Txt(isHome ? this.t(`button.start`) : this.t(`button.back`), {
 			tsgName: 'span',
 			className: 'start',
 			events: {
 				click: () => {
-					if (isHome) { return; }
+					if (isHome) {
+						return;
+					}
 					this.module.router.setRoute(null);
 				}
 			}

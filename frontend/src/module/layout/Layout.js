@@ -8,7 +8,7 @@ class Layout {
 		this.app = app;
 		this.params = params;
 
-		this.app.require([ 'router', 'client', 'alert', 'translation' ], this._init.bind(this));
+		this.app.require(['router', 'client', 'alert', 'translation'], this._init.bind(this));
 		this._alert = this._alert.bind(this);
 		this._askForNotificationPermission = this._askForNotificationPermission.bind(this);
 	}
@@ -36,8 +36,7 @@ class Layout {
 
 		this._notyf = new Notyf({
 			duration: 3000,
-			types: [
-				{
+			types: [{
 					type: 'warning',
 					backgroundColor: 'orange',
 					icon: false
@@ -66,9 +65,11 @@ class Layout {
 				name: "Notification",
 				description: "Allow notifications",
 				request: m => {
-					return new Promise((r, e) =>  {
+					return new Promise((r, e) => {
 						Notification.requestPermission().then(result => {
-							m.set({ notifications: result === 'granted' });
+							m.set({
+								notifications: result === 'granted'
+							});
 							r(true);
 						}).catch(err => {
 							e(err);
@@ -90,7 +91,9 @@ class Layout {
 			}
 
 			if (this.model.notifications) {
-				new Notification(`hupi`, { body: `${data.type}\n\n${data.message}` });
+				new Notification(`hupi`, {
+					body: `${data.type}\n\n${data.message}`
+				});
 			}
 		});
 	}
