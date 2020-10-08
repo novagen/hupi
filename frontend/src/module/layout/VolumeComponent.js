@@ -60,13 +60,18 @@ class MainComponent extends ModuleComponent {
             ]),
             n.elem('div', { className: 'volume-button'}, [
                 n.component(new ModelComponent(this.model, new Elem(c => c.elem('span', { className: 'button', events: {
-                    click: () => {
+                    click: (m) => {
+                        if (m.mute) { return; }
                         this._setVolume(null, 'down');
                     }
                 } }, [
                     c.elem('span', { className: 'fas fa-fw fa-lg fa-volume-down' })
-                ])), (_, e) => {
-                    e.setDisabled(m.mute);
+                ])), (m, e) => {
+                    if(m.mute) {
+                        e.addClass('disabled');
+                    } else {
+                        e.removeClass('disabled');
+                    }
                 }))
             ]),
             n.elem('div', { className: 'volume-slider'}, [
@@ -89,13 +94,18 @@ class MainComponent extends ModuleComponent {
             ]),
             n.elem('div', { className: 'volume-button'}, [
                 n.component(new ModelComponent(this.model, new Elem(c => c.elem('span', { className: 'button', events: {
-                    click: () => {
+                    click: (m) => {
+                        if (m.mute) { return; }
                         this._setVolume(null, 'up');
                     }
                 } }, [
                     c.elem('span', { className: 'fas fa-fw fa-lg fa-volume-up' })
-                ])), (_, e) => {
-                    e.setDisabled(m.mute);
+                ])), (m, e) => {
+                    if(m.mute) {
+                        e.addClass('disabled');
+                    } else {
+                        e.removeClass('disabled');
+                    }
                 }))
             ])
         ]));
