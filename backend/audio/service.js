@@ -112,17 +112,25 @@ const doRotaryEncoderPoll = (cb) => {
 };
 
 const getRotaryEvent = () => {
+	let clearQueue = false;
+
 	if (pinQueue.length == 4) {
 		let rotation = checkForRotation(pinQueue);
 		if (rotation.changed) {
 			changeVolume(rotation.direction);
+			clearQueue = true;
 		}
 	}
 
 	if (pinQueue.length >= 2) {
 		if (checkForClick(pinQueue)) {
 			toggleMute();
+			clearQueue = true;
 		}
+	}
+
+	if (clearQueue) {
+		pinQueue = [];
 	}
 };
 
