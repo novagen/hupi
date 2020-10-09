@@ -106,7 +106,6 @@ class Router {
 			// [TODO] Catch errors to continue further back navigation
 			this.setRoute(routeId, params, false).catch(
 				() => {
-					// eslint-disable-next-line no-console
 					console.error("Failed to navigate back. Resetting to start route");
 					history.replaceState(null, null, null);
 					this.setRoute(null, null, false);

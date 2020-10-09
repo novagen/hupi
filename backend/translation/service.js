@@ -1,12 +1,9 @@
 import config from '../config';
-
 import path from 'path';
 import fs from 'fs';
+import Service from '../service';
 
-import { Logger } from 'wace-admin-support';
-import { Service, Constants } from 'wace-admin-service';
-
-const nats = new Service("Translation", Service.getNatsConfig(config)).connect();
+const nats = new Service("Translation", config.nats).connect();
 
 let cache = {};
 
@@ -110,8 +107,7 @@ nats.subscribe('call.system.translation.*.load', function(msg, reply, subj) {
 	getTranslations(lang, params.namespace).then(model => {
 		nats.publish(reply, JSON.stringify({ result: model }));
 	}).catch(e => {
-		Logger.Error(e);
-		nats.publish(reply, Constants.internalError(JSON.stringify(e)));
+		nats.publish(reply, Service.internalError(JSON.stringify(e)));
 	});
 });
 
@@ -122,8 +118,7 @@ nats.subscribe('call.system.translation.*.save', function(msg, reply, subj) {
 	saveTranslations(lang, params.namespace, params.data).then(model => {
 		nats.publish(reply, JSON.stringify({ result: model }));
 	}).catch(e => {
-		Logger.Error(e);
-		nats.publish(reply, Constants.internalError(JSON.stringify(e)));
+		nats.publish(reply, Service.internalError(JSON.stringify(e)));
 	});
 });
 
@@ -133,8 +128,7 @@ nats.subscribe('call.system.translation.*.create', function(msg, reply) {
 	createTranslations(params.languages, params.namespace, params.key, params.fallbackValue).then(model => {
 		nats.publish(reply, JSON.stringify({ result: model }));
 	}).catch(e => {
-		Logger.Error(e);
-		nats.publish(reply, Constants.internalError(JSON.stringify(e)));
+		nats.publish(reply, Service.internalError(JSON.stringify(e)));
 	});
 });
 

@@ -15,11 +15,10 @@
 	"homepage": "https://github.com/novagen/hupi#readme",
 	"dependencies": {
 		"async-polling": "^0.2.1",
+		"loudness": "^0.4.1",
 		"nats": "^1.4.12",
 		"naudiodon": "^2.2.4",
 		"object-diff": "0.0.4",
-		"rpio": "^2.2.0",
-		"wace-admin-service": "^1.0.13",
-		"wace-admin-support": "^1.0.12"
+		"rpio": "^2.2.0"
 	}
 }

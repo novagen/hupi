@@ -1,7 +1,7 @@
 import config from '../config';
-import { Service } from 'wace-admin-service';
+import Service from '../service';
 
-const nats = new Service("Access", Service.getNatsConfig(config)).connect();
+const nats = new Service("Access", config.nats).connect();
 
 nats.subscribe('access.system.translation.>', (_, reply) => {
 	nats.publish(reply, JSON.stringify({
