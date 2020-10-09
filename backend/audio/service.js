@@ -109,7 +109,7 @@ const changeVolume = (dir) => {
 	const changed = diff(volumeModel, volume);
 
 	if (changed && Object.keys(changed).length) {
-		volume.update(changed);
+		volume.set(changed);
 	}
 };
 
