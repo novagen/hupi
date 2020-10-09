@@ -15,6 +15,7 @@
 	"homepage": "https://github.com/novagen/hupi#readme",
 	"dependencies": {
 		"async-polling": "^0.2.1",
+		"loudness": "^0.4.1",
 		"nats": "^1.4.12",
 		"naudiodon": "^2.2.4",
 		"object-diff": "0.0.4",

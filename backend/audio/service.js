@@ -2,6 +2,7 @@ import config from '../config';
 import diff from 'object-diff';
 import RotaryReader from './RotaryReader';
 import Service from '../service';
+import loudness from 'loudness';
 
 const nats = new Service("Audio", config.nats).connect();
 const portAudio = require('naudiodon');
@@ -60,6 +61,63 @@ const toggleMute = () => {
 	}
 };
 
+const setAudioValues = (val) => {
+	console.log('setAudioValues', val);
+	const changed = diff(volumeModel, val);
+
+	if (changed && Object.keys(changed).length) {
+		Object.assign(volumeModel, changed);
+
+		nats.publish("event.audio.volume.change", JSON.stringify({
+			values: changed
+		}));
+	}
+};
+
+const getVolume = () => {
+	return new Promise((resolve, _) => {
+		loudness.getVolume().then(r => {
+			resolve(r);
+		}).catch(e => {
+			console.log(e);
+			resolve(0);
+		});
+	});
+};
+
+const getMuted = () => {
+	return new Promise((resolve, _) => {
+		loudness.getMuted().then(r => {
+			resolve(r);
+		}).catch(e => {
+			console.log(e);
+			resolve(false);
+		});
+	});
+};
+
+const setVolume = (val) => {
+	return new Promise((resolve, _) => {
+		loudness.setVolume(val).then(_ => {
+			resolve();
+		}).catch(e => {
+			console.log(e);
+			resolve();
+		});
+	});
+};
+
+const setMuted = (val) => {
+	return new Promise((resolve, _) => {
+		loudness.setMuted(val).then(_ => {
+			resolve();
+		}).catch(e => {
+			console.log(e);
+			resolve();
+		});
+	});
+};
+
 const changeVolume = (dir) => {
 	if (volumeModel.mute) {
 		return;
@@ -90,12 +148,56 @@ const changeVolume = (dir) => {
 	const changed = diff(volumeModel, volume);
 
 	if (changed && Object.keys(changed).length) {
+		updateVolumeModel(changed);
+	}
+};
+
+const updateVolumeModel = (changed) => {
+	let promises = [];
+
+	if (changed.volume) {
+		promises.push(setVolume(changed.volume));
+	}
+
+	if (changed.mute) {
+		promises.push(setMuted(changed.mute));
+	}
+
+	Promise.all(promises).then(_ => {
 		Object.assign(volumeModel, changed);
 
 		nats.publish("event.audio.volume.change", JSON.stringify({
 			values: changed
 		}));
-	}
+	}).catch(e => {
+		console.error(e);
+	});
+};
+
+const init = () => {
+	let promises = [];
+
+	promises.push(getVolume());
+	promises.push(getMuted());
+
+	Promise.all(promises).then(r => {
+		let val = {
+			volume: r[0],
+			mute: r[1]
+		};
+
+		setAudioValues(val);
+	}).catch(e => {
+		console.error(e);
+	});
+};
+
+const read = () => {
+	new RotaryReader({
+		onRotation: (dir) => { changeVolume(dir); },
+		onClick: () => { toggleMute(); },
+		onError: (err) => { console.error(err); }
+	}).start();
 };
 
 nats.subscribe('get.audio.device.*', function (_, reply, subj) {
@@ -109,7 +211,7 @@ nats.subscribe('get.audio.device.*', function (_, reply, subj) {
 				}
 			}));
 		} else {
-			nats.publish(reply, Service.notFound);
+			nats.publish(reply, Service.notFound());
 		}
 	}).catch(e => {
 		nats.publish(reply, Service.internalError(JSON.stringify(e)));
@@ -121,16 +223,10 @@ nats.subscribe('call.audio.volume.set', (req, reply) => {
 	const changed = diff(volumeModel, params.params);
 
 	if (changed && Object.keys(changed).length) {
-		Object.assign(volumeModel, changed);
-
-		nats.publish(reply, Service.success);
-
-		nats.publish("event.audio.volume.change", JSON.stringify({
-			values: changed
-		}));
-	} else {
-		nats.publish(reply, Service.success);
+		updateVolumeModel(changed);
 	}
+
+	nats.publish(reply, Service.success());
 });
 
 nats.subscribe('get.audio.volume', function (_, reply) {
@@ -141,7 +237,7 @@ nats.subscribe('get.audio.volume', function (_, reply) {
 			}
 		}));
 	} else {
-		nats.publish(reply, Service.notFound);
+		nats.publish(reply, Service.notFound());
 	}
 });
 
@@ -158,9 +254,5 @@ nats.subscribe('get.audio.devices', function (_, reply) {
 
 nats.publish('system.reset', JSON.stringify({ resources: ['audio.>'] }));
 
-new RotaryReader({
-	onRotation: (dir) => { changeVolume(dir); },
-	onClick: () => { toggleMute(); },
-	// eslint-disable-next-line no-console
-	onError: (err) => { console.error(err); }
-}).start();
+init();
+read();
