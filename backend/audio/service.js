@@ -102,11 +102,11 @@ const changeVolume = (dir) => {
 		new_volume = 0;
 	}
 
-	let volume = {
+	let data = {
 		volume : new_volume
 	};
 
-	const changed = diff(volumeModel, volume);
+	const changed = diff(volumeModel, data);
 
 	if (changed && Object.keys(changed).length) {
 		volume.set(changed);
