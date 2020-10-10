@@ -3,7 +3,7 @@ import path from 'path';
 import fs from 'fs';
 import Service from '../service';
 
-const nats = new Service("Translation", config.nats).connect();
+const service = new Service("Translation", config.nats);
 
 let cache = {};
 
@@ -100,36 +100,36 @@ const createTranslations = (languages, namespace, key, fallbackValue) => {
 	});
 };
 
-nats.subscribe('call.system.translation.*.load', function(msg, reply, subj) {
+service.subscribe('call.system.translation.*.load', function(msg, reply, subj) {
 	const lang = subj.substring(24, subj.length - 5);
 	let { params } = JSON.parse(msg);
 
 	getTranslations(lang, params.namespace).then(model => {
-		nats.publish(reply, JSON.stringify({ result: model }));
+		service.publish(reply, { result: model });
 	}).catch(e => {
-		nats.publish(reply, Service.internalError(JSON.stringify(e)));
+		service.publish(reply, Service.internalError(JSON.stringify(e)));
 	});
 });
 
-nats.subscribe('call.system.translation.*.save', function(msg, reply, subj) {
+service.subscribe('call.system.translation.*.save', function(msg, reply, subj) {
 	const lang = subj.substring(24, subj.length - 5);
 	let { params } = JSON.parse(msg);
 
 	saveTranslations(lang, params.namespace, params.data).then(model => {
-		nats.publish(reply, JSON.stringify({ result: model }));
+		service.publish(reply, { result: model });
 	}).catch(e => {
-		nats.publish(reply, Service.internalError(JSON.stringify(e)));
+		service.publish(reply, Service.internalError(JSON.stringify(e)));
 	});
 });
 
-nats.subscribe('call.system.translation.*.create', function(msg, reply) {
+service.subscribe('call.system.translation.*.create', function(msg, reply) {
 	let { params } = JSON.parse(msg);
 
 	createTranslations(params.languages, params.namespace, params.key, params.fallbackValue).then(model => {
-		nats.publish(reply, JSON.stringify({ result: model }));
+		service.publish(reply, { result: model });
 	}).catch(e => {
-		nats.publish(reply, Service.internalError(JSON.stringify(e)));
+		service.publish(reply, Service.internalError(JSON.stringify(e)));
 	});
 });
 
-nats.publish('system.reset', JSON.stringify({ resources: [ 'system.translation.>' ] }));
+service.publish('system.reset', { resources: [ 'system.translation.>' ] });

@@ -1,24 +1,24 @@
 import config from '../config';
 import Service from '../service';
 
-const nats = new Service("Access", config.nats).connect();
+const service = new Service("Access", config.nats);
 
-nats.subscribe('access.system.translation.>', (_, reply) => {
-	nats.publish(reply, JSON.stringify({
+service.subscribe('access.system.translation.>', (_, reply) => {
+	service.publish(reply, {
 		result: {
 			get: true,
 			call: "*"
 		}
-	}));
+	});
 });
 
-nats.subscribe('access.audio.>', (_, reply) => {
-	nats.publish(reply, JSON.stringify({
+service.subscribe('access.audio.>', (_, reply) => {
+	service.publish(reply, {
 		result: {
 			get: true,
 			call: "*"
 		}
-	}));
+	});
 });
 
-nats.publish('system.reset', JSON.stringify({ resources: [ 'access.>' ] }));
+service.publish('system.reset', { resources: [ 'access.>' ] });

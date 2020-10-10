@@ -4,17 +4,18 @@ import RotaryReader from './RotaryReader';
 import Service from '../service';
 import VolumeControl from './VolumeControl';
 
-const nats = new Service("Audio", config.nats).connect();
 const portAudio = require('naudiodon');
 const stepSize = 1;
+
+const service = new Service("Audio", config.nats);
 
 const volume = new VolumeControl({
 	onSet: (changed) => {
 		Object.assign(volumeModel, changed);
 
-		nats.publish("event.audio.volume.change", JSON.stringify({
+		service.publish("event.audio.volume.change", {
 			values: changed
-		}));
+		});
 	}
 });
 
@@ -43,11 +44,11 @@ const sendListReply = (res, reply) => {
 		});
 	}
 
-	nats.publish(reply, JSON.stringify({
+	service.publish(reply, {
 		result: {
 			collection: result
 		}
-	}));
+	});
 };
 
 const getAudioDevices = () => {
@@ -73,9 +74,9 @@ const setAudioValues = (val) => {
 	if (changed && Object.keys(changed).length) {
 		Object.assign(volumeModel, changed);
 
-		nats.publish("event.audio.volume.change", JSON.stringify({
+		service.publish("event.audio.volume.change", {
 			values: changed
-		}));
+		});
 	}
 };
 
@@ -145,55 +146,55 @@ const read = () => {
 	}).start();
 };
 
-nats.subscribe('get.audio.device.*', function (_, reply, subj) {
+service.subscribe('get.audio.device.*', function (_, reply, subj) {
 	let id = subj.substring(17);
 
 	getAudioModel(id).then(model => {
 		if (model) {
-			nats.publish(reply, JSON.stringify({
+			service.publish(reply, {
 				result: {
 					model
 				}
-			}));
+			});
 		} else {
-			nats.publish(reply, Service.notFound());
+			service.publish(reply, Service.notFound());
 		}
 	}).catch(e => {
-		nats.publish(reply, Service.internalError(JSON.stringify(e)));
+		service.publish(reply, Service.internalError(JSON.stringify(e)));
 	});
 });
 
-nats.subscribe('call.audio.volume.set', (req, reply) => {
+service.subscribe('call.audio.volume.set', (req, reply) => {
 	const params = JSON.parse(req).params;
 
 	volume.set(params);
-	nats.publish(reply, Service.success());
+	service.publish(reply, Service.success());
 });
 
-nats.subscribe('get.audio.volume', function (_, reply) {
+service.subscribe('get.audio.volume', function (_, reply) {
 	if (volumeModel) {
-		nats.publish(reply, JSON.stringify({
+		service.publish(reply, {
 			result: {
 				model: volumeModel
 			}
-		}));
+		});
 	} else {
-		nats.publish(reply, Service.notFound());
+		service.publish(reply, Service.notFound());
 	}
 });
 
-nats.subscribe('get.audio.devices', function (_, reply) {
+service.subscribe('get.audio.devices', function (_, reply) {
 	try {
 		const devices = getAudioDevices();
 		sendListReply(devices, reply);
 	} catch (err) {
-		nats.publish(reply, Service.internalError(JSON.stringify(err)));
+		service.publish(reply, Service.internalError(JSON.stringify(err)));
 
 		return;
 	}
 });
 
-nats.publish('system.reset', JSON.stringify({ resources: ['audio.>'] }));
+service.publish('system.reset', { resources: ['audio.>'] });
 
 init();
 read();

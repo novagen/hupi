@@ -13,29 +13,49 @@ class Service {
         this.connect = this.connect.bind(this);
         this._shutdown = this._shutdown.bind(this);
 
+        this.subscriptions = [];
+
         Object.keys(signals).forEach((signal) => {
             process.on(signal, () => {
                 this._shutdown(signals[signal]);
             });
         });
+
+        this.start = this.start.bind(this);
+        this.start();
+    }
+
+    start() {
+        console.info('[' + this.name + '] starting');
+        this.nats = require('nats').connect(this.config.path);
     }
 
     static notFound() {
-        return JSON.stringify({ error: { code: "system.notFound", message: "Not found" }});
+        return { error: { code: "system.notFound", message: "Not found" }};
     }
 
     static success() {
-        return JSON.stringify({ result: null });
+        return { result: null };
     }
 
     static internalError(message) {
-        return JSON.stringify({ error: { code: "system.internal", message }});
+        return { error: { code: "system.internal", message }};
     }
 
+    subscribe(subject, callback) {
+        if (this.subscriptions.includes(subject)) {
+            throw new Error(`Subject already subscribed: ${subject}`);
+        }
+
+        this.subscriptions.push(subject);
+        this.nats.subscribe(subject, callback);
+    }
+
+    publish(subject, data) {
+        this.nats.publish(subject, JSON.stringify(data));
+    }
 
     connect() {
-        this.nats = require('nats').connect(this.config.path);
-
         this.nats.getService = () => {
             return this;
         };
