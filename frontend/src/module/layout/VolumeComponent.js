@@ -116,31 +116,6 @@ class MainComponent extends ModuleComponent {
 					}
 				}))
 			]),
-			n.elem('div', { className: 'volume-slider' }, [
-				n.elem('div', { className: 'slider', attributes: {
-					'data-slider': true,
-					'data-initial-start': this.module.volume,
-					'data-end': 100
-				} }, [
-					n.elem('span', { className: 'slider-handle', attributes: { 'data-slider-handle' : true, role: 'slider' } }),
-					n.elem('span', { className: 'slider-fill' }),
-					n.component(new ModelInput(this.model, (m, e) => {
-						console.log(m, e);
-						e.setDisabled(m.mute);
-						e.dispatchEvent(new Event('change'));
-						return m.volume.toString();
-					}, {
-						attributes: {
-							type: 'hidden'
-						},
-						events: {
-							input: (_, ev) => {
-								this._setVolume(parseInt(ev.target.value));
-							}
-						}
-					}))
-				])
-			]),
 			n.elem('div', {
 				className: 'volume-button'
 			}, [
