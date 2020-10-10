@@ -13,3 +13,16 @@ body {
 	margin: 0;
 	padding: 0;
 }
+
+header {
+	div {
+		.home {
+			float: left;
+		}
+		.volume {
+			float: right;
+		}
+
+		overflow: hidden;
+	}
+}
