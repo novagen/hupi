@@ -103,6 +103,7 @@ class MainComponent extends ModuleComponent {
 					e.setDisabled(m.mute);
 					return m.volume.toString();
 				}, {
+					className: 'slider',
 					attributes: {
 						type: 'range',
 						min: 0,
