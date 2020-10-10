@@ -10,5 +10,12 @@
 	.volume-slider {
 		flex: 1;
 		padding: 10px;
+
+		input[type="range"] {
+			&.slider {
+				-webkit-appearance: none;
+				-moz-appearance: none;
+			}
+		}
 	}
 }
