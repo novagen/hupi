@@ -4,7 +4,7 @@ import { ModelInput, ModelComponent } from 'modapp-resource-component';
 
 import './VolumeComponent.scss';
 
-class MainComponent extends ModuleComponent {
+class VolumeComponent extends ModuleComponent {
 	constructor(app, module, params) {
 		super('module.layout.volume', module);
 
@@ -205,4 +205,4 @@ class MainComponent extends ModuleComponent {
 	}
 }
 
-export default MainComponent;
+export default VolumeComponent;

@@ -15,6 +15,7 @@ class External {
 		this.module.router.addRoute({
 			id: "external",
 			name: 'External',
+			icon: 'broadcast-tower',
 			parentId: null,
 			order: 30,
 			setState: () => {},

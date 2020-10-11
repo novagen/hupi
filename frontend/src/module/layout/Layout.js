@@ -21,7 +21,8 @@ class Layout {
 
 		this.module.router.addRoute({
 			id: '',
-			name: 'Start',
+			name: 'Home',
+			icon: 'home',
 			parentId: null,
 			order: 10,
 			setState: () => {},

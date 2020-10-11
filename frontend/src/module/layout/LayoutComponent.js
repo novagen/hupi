@@ -1,8 +1,10 @@
 import { Elem, Transition, Txt } from 'modapp-base-component';
-import { ModuleComponent } from 'component';
+import { ModuleComponent, ModelQuickTxt } from 'component';
 import MainComponent from './MainComponent';
 import VolumeComponent from './VolumeComponent';
-import { ModelTxt } from 'modapp-resource-component';
+import MenuComponent from './MenuComponent';
+import { Model } from 'modapp-resource';
+
 class LayoutComponent extends ModuleComponent {
 
 	constructor(app, module, params, model) {
@@ -14,6 +16,18 @@ class LayoutComponent extends ModuleComponent {
 		this.model = model;
 		this.defaultComponent = new MainComponent(this.app, this.module, this.params.main);
 
+		this.time = new Model({
+			eventBus: this.app.eventBus,
+			namespace: 'module.layout.time.model',
+			definition: {
+				time: {
+					type: '?string',
+					default: ''
+				}
+			},
+			data: {}
+		});
+
 		this._setListeners = this._setListeners.bind(this);
 
 		this._modelChanged = this._modelChanged.bind(this);
@@ -23,19 +37,48 @@ class LayoutComponent extends ModuleComponent {
 		this._setHomeButton = this._setHomeButton.bind(this);
 		this._loadVolumeModel = this._loadVolumeModel.bind(this);
 		this._renderVolume = this._renderVolume.bind(this);
+		this._startTime = this._startTime.bind(this);
 	}
 
 	_modelChanged() {}
 
+	_startTime() {
+		var today = new Date();
+		var h = today.getHours();
+		var m = today.getMinutes();
+		//var s = today.getSeconds();
+		h = this._checkTime(h);
+		m = this._checkTime(m);
+		//s = this._checkTime(s);
+
+		this.time.set({
+			time: h + ":" + m
+		});
+
+		this.clockTimeout = setTimeout(this._startTime, 500);
+	}
+
+	_checkTime(i) {
+		if (i < 10) {
+			i = "0" + i;
+		}
+
+		return i;
+	}
+
 	render(el) {
 		this.node = new Elem(n =>
 			n.elem('body', 'div', {
-				className: 'body'
+				className: 'body grid-y medium-grid-frame'
 			}, [
-				n.elem('header', {}, [
+				n.elem('header', { className: 'cell shrink header medium-cell-block-container' }, [
 					n.elem('div', {}, [
 						n.elem('div', { className: 'home' }, [
 							n.component('home', new Transition())
+						]),
+						n.elem('div', { className: 'time' }, [
+							n.elem('span', { className: 'fas fa-fw fa-clock icon' }),
+							n.component(new ModelQuickTxt(this.time, (m) => m.time))
 						]),
 						n.elem('div', { className: 'volume' }, [
 							n.component('vol', new Transition())
@@ -43,7 +86,7 @@ class LayoutComponent extends ModuleComponent {
 					])
 				]),
 				n.elem('main', {
-					className: 'content'
+					className: 'content cell medium-auto medium-cell-block-container'
 				}, [
 					n.elem('div', {
 						className: 'grid-y'
@@ -59,6 +102,9 @@ class LayoutComponent extends ModuleComponent {
 							n.component('main', new Transition())
 						])
 					]),
+				]),
+				n.elem('footer', { className: 'cell shrink footer' }, [
+					n.component('menu', new MenuComponent(this.app, this.module, this.params))
 				])
 			])
 		);
@@ -69,6 +115,7 @@ class LayoutComponent extends ModuleComponent {
 
 		this._loadVolumeModel();
 		this._setRoute();
+		this._startTime();
 	}
 
 	_loadVolumeModel() {
@@ -81,7 +128,28 @@ class LayoutComponent extends ModuleComponent {
 	_renderVolume() {
 		let node = this.node.getNode('vol');
 
-		let component = new Elem(n => n.component(new ModelTxt(this.volume, (m) => m.volume + '%', { tagName: 'span' })));
+		let component = new Elem(n => n.elem('span', {}, [
+			n.component(new ModelQuickTxt(this.volume, (m, e) => {
+				if (m.mute) {
+					e.removeClass('fa-volume-up');
+					e.addClass('fa-volume-,ute');
+				} else {
+					e.removeClass('fa-volume-mute');
+					e.addClass('fa-volume-up');
+				}
+
+				return '';
+			}, { tagName: 'span', className: 'fas fa-fw icon' })),
+			n.component(new ModelQuickTxt(this.volume, (m, e) => {
+				if (m.mute) {
+					e.addClass('disabled');
+				} else {
+					e.removeClass('disabled');
+				}
+
+				return m.volume + '%';
+			}, { tagName: 'span' }))
+		]));
 
 		if (node && component) {
 			node.fade(component);
@@ -164,6 +232,10 @@ class LayoutComponent extends ModuleComponent {
 		this._setListeners(false);
 		this.node.unrender();
 		this.node = null;
+
+		if (this.clockTimeout) {
+			clearTimeout(this.clockTimeout);
+		}
 	}
 }
 

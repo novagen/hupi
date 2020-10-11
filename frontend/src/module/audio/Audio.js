@@ -30,6 +30,7 @@ class Audio {
 		this.module.router.addRoute({
 			id: "audio",
 			name: 'Audio',
+			icon: 'headphones',
 			parentId: null,
 			order: 20,
 			setState: this._setState,

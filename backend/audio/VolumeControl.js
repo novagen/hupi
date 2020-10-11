@@ -4,7 +4,7 @@ class VolumeContol {
     constructor(opt) {
         this.opt = Object.assign({
 			onSet: () => {}
-		}, opt);
+        }, opt);
     }
 
     volume() {
@@ -53,10 +53,8 @@ class VolumeContol {
         });
     }
 
-
     set(changed) {
         let promises = [];
-        console.log(changed);
 
         if (changed.volume) {
             promises.push(this._setVolume(changed.volume));

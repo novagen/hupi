@@ -19,8 +19,19 @@ header {
 		.home {
 			float: left;
 		}
+
 		.volume {
 			float: right;
+		}
+
+		.time {
+			float:right;
+			margin-left: 5px;
+		}
+
+		.icon {
+			margin-left: 5px;
+			margin-right: 5px;
 		}
 
 		overflow: hidden;
