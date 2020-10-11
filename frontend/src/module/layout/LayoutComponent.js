@@ -97,7 +97,7 @@ class LayoutComponent extends ModuleComponent {
 							n.component('volume', new VolumeComponent(this.app, this.module, this.params.volume))
 						]),
 						n.elem('div', {
-							className: 'cell'
+							className: 'cell main'
 						}, [
 							n.component('main', new Transition())
 						])

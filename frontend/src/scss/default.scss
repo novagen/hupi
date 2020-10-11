@@ -14,6 +14,11 @@ body {
 	padding: 0;
 }
 
+body {
+	background: #fefefe;
+	color: #222;
+}
+
 header {
 	div {
 		.home {
@@ -36,4 +41,16 @@ header {
 
 		overflow: hidden;
 	}
+}
+
+.main {
+	padding: 10px;
+}
+
+header {
+	padding: 10px 20px;
+	width: 100%;
+	box-sizing: border-box;
+	background: #222;
+	color: #fcfcfc;
 }

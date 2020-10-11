@@ -1,6 +1,4 @@
-header {
-	padding: 10px 20px;
-	width: 100%;
+footer {
 	box-sizing: border-box;
 	background: #222;
 	color: #fcfcfc;
@@ -9,8 +7,10 @@ header {
 .menu {
 	.item {
 		&.active {
-			background: #55F;
+			background: #fefefe;
+			color: #222;
 		}
+
 		padding: 20px;
 		text-align: center;
 
