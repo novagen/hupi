@@ -1,7 +1,8 @@
-import { Elem, Txt } from 'modapp-base-component';
+import { Elem } from 'modapp-base-component';
 import { ModuleComponent } from 'component';
 
 import './VolumeComponent.scss';
+import PlayingComponent from './PlayingComponent';
 
 class MainComponent extends ModuleComponent {
 	constructor(app, module, params) {
@@ -10,18 +11,6 @@ class MainComponent extends ModuleComponent {
 		this.app = app;
 		this.module = module;
 		this.params = params;
-
-		this._setListeners = this._setListeners.bind(this);
-	}
-
-	_setListeners(on) {
-		if (on) {
-			// this.module.router.on('add', this._addRoute);
-			// this.module.router.on('remove', this._delRoute);
-		} else {
-			// this.module.router.off('add', this._addRoute);
-			// this.module.router.off('remove', this._delRoute);
-		}
 	}
 
 	render(el) {
@@ -31,16 +20,14 @@ class MainComponent extends ModuleComponent {
 			n.elem('div', {
 				className: 'cell'
 			}, [
-				n.component(new Txt('start'))
+				n.component(new PlayingComponent(this.app, this.module, this.params))
 			])
 		]));
 
-		this._setListeners(true);
         this.node.render(el);
 	}
 
 	unrender() {
-		this._setListeners(false);
 		this.node.unrender();
 		this.node = null;
 	}

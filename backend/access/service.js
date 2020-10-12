@@ -21,4 +21,13 @@ service.subscribe('access.audio.>', (_, reply) => {
 	});
 });
 
+service.subscribe('access.media.>', (_, reply) => {
+	service.publish(reply, {
+		result: {
+			get: true,
+			call: "*"
+		}
+	});
+});
+
 service.publish('system.reset', { resources: [ 'access.>' ] });

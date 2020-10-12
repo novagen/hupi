@@ -55,6 +55,22 @@ class Service {
         this.nats.publish(subject, JSON.stringify(data));
     }
 
+    sendListReply(ridPrefix, res, reply) {
+        var result = [];
+
+        for (const m of res) {
+            result.push({
+                rid: ridPrefix + m.id
+            });
+        }
+
+        this.publish(reply, {
+            result: {
+                collection: result
+            }
+        });
+    }
+
     connect() {
         this.nats.getService = () => {
             return this;

@@ -6,7 +6,15 @@
 
 $fa-font-path:"~@fortawesome/fontawesome-free/webfonts";
 @import '~@fortawesome/fontawesome-free/scss/solid';
+@import '~@fortawesome/fontawesome-free/scss/brands';
 @import '~@fortawesome/fontawesome-free/scss/fontawesome';
+
+* {
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
 
 html,
 body {
@@ -30,7 +38,7 @@ header {
 		}
 
 		.time {
-			float:right;
+			float: right;
 			margin-left: 5px;
 		}
 
@@ -43,8 +51,20 @@ header {
 	}
 }
 
-.main {
-	padding: 10px;
+main {
+	.container {
+		height: 100%;
+		display: flex;
+  		flex-flow: column;
+
+		.volume {}
+
+		.main {
+			padding: 10px;
+			flex: 1;
+			overflow: auto;
+		}
+	}
 }
 
 header {

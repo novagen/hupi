@@ -60,6 +60,24 @@ module.exports = {
 			}
         },
 		{
+			name: 'media',
+			script: 'media/service.js',
+			args: '',
+			watch: ["media/"],
+			ignore_watch: ["node_modules"],
+			node_args: node_args,
+			instances: 1,
+			autorestart: autorestart,
+			watch_delay: watch_delay,
+			max_memory_restart: max_memory_restart,
+			env: {
+				NODE_ENV: 'development'
+			},
+			env_production: {
+				NODE_ENV: 'production'
+			}
+        },
+		{
 			name: 'translation',
 			script: 'translation/service.js',
 			args: '',
@@ -95,6 +113,5 @@ module.exports = {
 				NODE_ENV: 'production'
 			}
 		}
-
     ]
 };

@@ -4,6 +4,8 @@ import Dialog from './Dialog.js';
 import ModuleComponent from './ModuleComponent.js';
 import ModelQuickTxt from './ModelQuickTxt.js';
 import QuickTxt from './QuickTxt.js';
+import Elem from './Elem.js';
+import RootElem from './RootElem.js';
 
 export {
 	CollectionList,
@@ -11,5 +13,7 @@ export {
 	Dialog,
 	ModuleComponent,
 	QuickTxt,
-	ModelQuickTxt
+	ModelQuickTxt,
+	Elem,
+	RootElem
 };

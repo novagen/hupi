@@ -1,0 +1,46 @@
+.playing {
+    text-align: center;
+    .image {
+        position: relative;
+        display: inline-block;
+
+        img {
+            display: block;
+            margin: 0;
+            padding: 0;
+        }
+
+        .provider {
+            font-size: larger;
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            color: #fefefe;
+        }
+    }
+
+    .info {
+        span {
+            display: block;
+
+            &.artist {
+                font-weight: bold;
+            }
+            &.track {
+                font-size: large;
+            }
+            &.album {
+                font-style: oblique;
+            }
+        }
+    }
+
+    .controls {
+        .button {
+            margin: 0;
+            &.play {
+                margin: 0 1px;
+            }
+        }
+    }
+}

@@ -1,4 +1,4 @@
-import { RootElem } from 'modapp-base-component';
+import RootElem from './RootElem';
 import { translate, onLocaleUpdate, offLocaleUpdate } from 'modapp-base-component/src/utils/l10n';
 
 /**

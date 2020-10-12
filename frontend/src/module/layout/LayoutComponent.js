@@ -89,15 +89,15 @@ class LayoutComponent extends ModuleComponent {
 					className: 'content cell medium-auto medium-cell-block-container'
 				}, [
 					n.elem('div', {
-						className: 'grid-y'
+						className: 'container'
 					}, [
 						n.elem('div', {
-							className: 'cell'
+							className: 'volume'
 						}, [
 							n.component('volume', new VolumeComponent(this.app, this.module, this.params.volume))
 						]),
 						n.elem('div', {
-							className: 'cell main'
+							className: 'main'
 						}, [
 							n.component('main', new Transition())
 						])
@@ -156,7 +156,7 @@ class LayoutComponent extends ModuleComponent {
 		}
 	}
 
-	_setHomeButton(isHome) {
+	_setHomeButton(title) {
 		if (!this.node) {
 			return;
 		}
@@ -166,17 +166,9 @@ class LayoutComponent extends ModuleComponent {
 			return;
 		}
 
-		let component = new Txt(isHome ? this.t(`button.start`) : this.t(`button.back`), {
-			tsgName: 'span',
-			className: 'start',
-			events: {
-				click: () => {
-					if (isHome) {
-						return;
-					}
-					this.module.router.setRoute(null);
-				}
-			}
+		let component = new Txt(title, {
+			tagName: 'span',
+			className: 'start'
 		});
 
 		node.set(component);
@@ -184,14 +176,16 @@ class LayoutComponent extends ModuleComponent {
 
 	_setRoute() {
 		const current = this.module.router.getCurrent();
+		let title = this.t(`main.menu.item.home`);
 
 		if (current && current.route) {
 			this._setComponent("main", current.route.component['main'], this.defaultComponent);
+			title = this.t(`main.menu.item.${ current.route.id ? current.route.id : 'home' }`);
 		} else {
 			this._setComponent("main", this.defaultComponent);
 		}
 
-		this._setHomeButton(!current || !current.route || current.route.id === '');
+		this._setHomeButton(title);
 	}
 
 	_setContent() {
