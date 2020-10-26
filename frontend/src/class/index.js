@@ -1,7 +1,7 @@
 import CollectionWrapper from './CollectionWrapper.js';
-import Backend from './i18nextBackend.js';
+import I18Backend from './I18Backend.js';
 
 export {
 	CollectionWrapper,
-	Backend
+	I18Backend
 };

@@ -1,4 +1,7 @@
 @charset "UTF-8";
+
+@import 'variables';
+
 @import 'foundation-sites/scss/foundation';
 @include foundation-range-input;
 @include foundation-everything();
@@ -22,10 +25,10 @@ body {
 	padding: 0;
 }
 
-body {
-	background: #fefefe;
-	color: #222;
-}
+// body {
+// 	background: #fefefe;
+// 	color: #222;
+// }
 
 header {
 	div {

@@ -4,7 +4,7 @@ var webpackMiddleware = require('webpack-dev-middleware');
 var webpackConfig = require('./webpack.config.js');
 
 const app = express();
-const port = 8000;
+const port = 8010;
 
 const middleware = webpackMiddleware(webpack(webpackConfig), {
 	publicPath: webpackConfig.output.publicPath,

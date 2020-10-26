@@ -1,10 +1,7 @@
 import { Elem } from 'modapp-base-component';
-import { ModuleComponent } from 'component';
-import { Txt } from 'modapp-base-component';
+import { ModuleComponent, Txt } from 'component';
 
-import './SettingsComponent.scss';
-
-class Settings extends ModuleComponent {
+class SettingsComponent extends ModuleComponent {
 	constructor(app, module) {
 		super('module.settings', module);
 
@@ -15,7 +12,7 @@ class Settings extends ModuleComponent {
 	render(el) {
 		this.node = new Elem(n =>
 			n.elem("div", { className: "settings" }, [
-				n.component(new Txt(this.t(`title`), { }))
+				n.component(new Txt(this.t('title', 'Settings'), { }))
 			])
 		);
 
@@ -28,4 +25,4 @@ class Settings extends ModuleComponent {
 	}
 }
 
-export default Settings;
+export default SettingsComponent;

@@ -1,8 +1,8 @@
-import { Elem, Txt } from 'modapp-base-component';
-import './scss/Dialog.scss';
+import { Elem } from 'modapp-base-component';
+import Txt from './Txt';
 
 class Dialog {
-	constructor(title, confirm, cancel, opt) { // confirm should be a promise
+	constructor(title, confirm, cancel, opt) {
 		this.title = title;
 		this.confirm = confirm ? confirm : () => { return new Promise((resolve, _) => { resolve(true); }); };
 		this.cancel = cancel ? cancel : () => { return new Promise((resolve, _) => { resolve(true); }); };
@@ -15,8 +15,8 @@ class Dialog {
 			messageBuilder: null,
 			errorLogger: () => {},
 			closeOnError: true,
-			yesString: opt.translator.t("dialog_button_ok"),
-			noString: opt.translator.t("dialog_button_cancel"),
+			yesString: opt.translator.t("dialog_button_ok", 'OK'),
+			noString: opt.translator.t("dialog_button_cancel", 'Avbryt'),
 			yesClassName: "button success right",
 			noClassName: "button alert left"
 		}, opt);

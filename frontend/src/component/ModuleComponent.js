@@ -5,15 +5,15 @@
 class ModuleComponent {
 	constructor(namespace, module) {
         if(!namespace) {
-            throw "Namespace missing";
+            throw "ModuleComponent -> Namespace missing";
         }
 
         if(!module) {
-            throw "Modules missing";
+            throw "ModuleComponent -> Modules missing";
         }
         
         if (!module.translation || !module.alert) {
-            throw "Modules Alert and Translation are required";
+            throw "ModuleComponent -> Modules Alert and Translation are required";
         }
 
         this.namespace = namespace.replace(/\./g, "_");
@@ -41,8 +41,12 @@ class ModuleComponent {
      * @param {function} formatter 
      * @param {String} ns 
      */
-    t(key, formatter, ns) {
-        return this.translate(this.namespace + '_' + key.replace(/\./g, "_"), formatter, ns);
+    t(key, defaultValue, formatter, ns) {
+        return this.translate(this.namespace + '_' + key.replace(/\./g, "_"), defaultValue, formatter, ns);
+    }
+
+    setLayout(val) {
+        this.layout = val;
     }
 }
 

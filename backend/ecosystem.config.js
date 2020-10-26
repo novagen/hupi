@@ -42,6 +42,24 @@ module.exports = {
 			}
         },
 		{
+			name: 'dash',
+			script: 'dash/service.js',
+			args: '',
+			watch: ["dash/"],
+			ignore_watch: ["node_modules"],
+			node_args: node_args,
+			instances: 1,
+			autorestart: autorestart,
+			watch_delay: watch_delay,
+			max_memory_restart: max_memory_restart,
+			env: {
+				NODE_ENV: 'development'
+			},
+			env_production: {
+				NODE_ENV: 'production'
+			}
+        },
+		{
 			name: 'external',
 			script: 'external/service.js',
 			args: '',

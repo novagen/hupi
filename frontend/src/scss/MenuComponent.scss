@@ -1,0 +1,27 @@
+footer {
+	box-sizing: border-box;
+	background: #222;
+	color: #fcfcfc;
+
+	.menu {
+		.item {
+			&.active {
+				background: #fefefe;
+				color: #222;
+			}
+
+			padding: 10px 20px;
+			text-align: center;
+
+			.icon {
+				margin-right: 5px;
+			}
+
+			.title {
+				padding: 5px;
+				box-sizing: border-box;
+				width: 100%;
+			}
+		}
+	}
+}

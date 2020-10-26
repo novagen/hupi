@@ -1,10 +1,10 @@
-import QuickTxt from './QuickTxt';
+import Txt from './Txt';
 import ModelListener from 'modapp-resource-component/src/utils/ModelListener';
 
 /**
  * A text component based on an model
  */
-class ModelQuickTxt extends QuickTxt {
+class ModelTxt extends Txt {
 
 	/**
 	 * Creates an instance of ModelTxt
@@ -45,4 +45,4 @@ class ModelQuickTxt extends QuickTxt {
 	}
 }
 
-export default ModelQuickTxt;
+export default ModelTxt;

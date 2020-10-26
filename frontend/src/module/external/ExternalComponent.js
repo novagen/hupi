@@ -1,8 +1,5 @@
 import { Elem } from 'modapp-base-component';
-import { ModuleComponent } from 'component';
-import { Txt } from 'modapp-base-component';
-
-import './ExternalComponent.scss';
+import { ModuleComponent, Txt } from 'component';
 
 class ExternalComponent extends ModuleComponent {
 	constructor(app, module) {
@@ -15,7 +12,7 @@ class ExternalComponent extends ModuleComponent {
 	render(el) {
 		this.node = new Elem(n =>
 			n.elem("div", { className: "audio" }, [
-				n.component(new Txt(this.t(`title`), { }))
+				n.component(new Txt(this.t('title', 'External'), { }))
 			])
 		);
 

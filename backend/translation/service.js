@@ -105,6 +105,7 @@ service.subscribe('call.system.translation.*.load', function(msg, reply, subj) {
 	let { params } = JSON.parse(msg);
 
 	getTranslations(lang, params.namespace).then(model => {
+		console.log("loading: ", lang);
 		service.publish(reply, { result: model });
 	}).catch(e => {
 		service.publish(reply, Service.internalError(JSON.stringify(e)));
@@ -116,7 +117,6 @@ service.subscribe('call.system.translation.*.save', function(msg, reply, subj) {
 	let { params } = JSON.parse(msg);
 
 	saveTranslations(lang, params.namespace, params.data).then(model => {
-		console.log('saved', model);
 		service.publish(reply, { result: model });
 	}).catch(e => {
 		service.publish(reply, Service.internalError(JSON.stringify(e)));
@@ -127,7 +127,6 @@ service.subscribe('call.system.translation.*.create', function(msg, reply) {
 	let { params } = JSON.parse(msg);
 
 	createTranslations(params.languages, params.namespace, params.key, params.fallbackValue).then(model => {
-		console.log('created', model);
 		service.publish(reply, { result: model });
 	}).catch(e => {
 		service.publish(reply, Service.internalError(JSON.stringify(e)));

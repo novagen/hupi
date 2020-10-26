@@ -1,8 +1,7 @@
-import { Elem, Transition, Txt } from 'modapp-base-component';
-import { ModuleComponent } from 'component';
+import { Elem, ModuleComponent, Container, Txt } from 'component';
 import { ModelInput, ModelComponent } from 'modapp-resource-component';
 
-import './VolumeComponent.scss';
+import 'scss/VolumeComponent.scss';
 
 class VolumeComponent extends ModuleComponent {
 	constructor(app, module, params) {
@@ -12,20 +11,9 @@ class VolumeComponent extends ModuleComponent {
 		this.module = module;
 		this.params = params;
 
-		this._setListeners = this._setListeners.bind(this);
 		this._renderVolume = this._renderVolume.bind(this);
 		this._load = this._load.bind(this);
 		this._setVolume = this._setVolume.bind(this);
-	}
-
-	_setListeners(on) {
-		if (on) {
-			// this.module.router.on('add', this._addRoute);
-			// this.module.router.on('remove', this._delRoute);
-		} else {
-			// this.module.router.off('add', this._addRoute);
-			// this.module.router.off('remove', this._delRoute);
-		}
 	}
 
 	_load() {
@@ -37,6 +25,7 @@ class VolumeComponent extends ModuleComponent {
 
 	_renderVolume() {
 		let node = this.node.getNode('volume');
+
 		let component = new Elem(n => n.elem('div', {
 			className: 'volume-grid'
 		}, [
@@ -145,7 +134,7 @@ class VolumeComponent extends ModuleComponent {
 		]));
 
 		if (node && component) {
-			node.fade(component);
+			node.set(component);
 		}
 	}
 
@@ -185,21 +174,14 @@ class VolumeComponent extends ModuleComponent {
 		this.node = new Elem(n => n.elem("div", {
 			className: 'grid-x'
 		}, [
-			n.elem('div', {
-				className: 'cell'
-			}, [
-				n.component('volume', new Transition())
-			])
+			n.component('volume', new Container({ className: 'cell' }))
 		]));
 
-		this._setListeners(true);
 		this.node.render(el);
-
 		this._load();
 	}
 
 	unrender() {
-		this._setListeners(false);
 		this.node.unrender();
 		this.node = null;
 	}

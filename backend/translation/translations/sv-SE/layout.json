@@ -1,0 +1,10 @@
+{
+    "module_layout_main_menu_item_audio": "Ljud",
+    "module_layout_main_menu_item_external": "Extern",
+    "module_layout_main_menu_item_home": "Hem",
+    "module_layout_main_menu_item_settings": "Inställningar",
+    "module_external_title": "extern",
+    "module_audio_title": "ljud",
+    "module_settings_title": "inställningar",
+    "module_layout_main_menu_item_dash":"Instrumentbräda"
+}

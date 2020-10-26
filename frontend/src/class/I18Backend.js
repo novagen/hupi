@@ -1,4 +1,4 @@
-class Backend {
+class I18Backend {
 	constructor(services, options = {}) {
 		this.init(services, options);
 		this.type = 'backend';
@@ -55,6 +55,6 @@ class Backend {
 	}
 }
 
-Backend.type = 'backend';
+I18Backend.type = 'backend';
 
-export default Backend;
+export default I18Backend;

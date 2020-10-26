@@ -83,8 +83,9 @@ class Layout {
 
 	_alert(data) {
 		let key = data.message;
+		let defaultValue = data.defaultValue;
 
-		this.module.translation.t(key, null, 'alert').then(r => {
+		this.module.translation.t(key, defaultValue, null, 'alert').then(r => {
 			data.message = r;
 
 			if (this._notyf) {
@@ -92,7 +93,7 @@ class Layout {
 			}
 
 			if (this.model.notifications) {
-				new Notification(`hupi`, {
+				new Notification(`Wace`, {
 					body: `${data.type}\n\n${data.message}`
 				});
 			}

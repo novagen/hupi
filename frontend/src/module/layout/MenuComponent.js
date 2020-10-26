@@ -1,9 +1,9 @@
 import { Elem } from 'modapp-base-component';
-import { CollectionList, ModuleComponent, ModelQuickTxt } from 'component';
+import { CollectionList, ModuleComponent, ModelTxt } from 'component';
 import { Model, Collection } from 'modapp-resource';
 import { ModelComponent } from 'modapp-resource-component';
 
-import './MenuComponent.scss';
+import 'scss/MenuComponent.scss';
 
 const menuSorter = (a, b) => {
 	let ao = typeof (a.order) === 'number' ? a.order : -1,
@@ -144,14 +144,14 @@ class MenuComponent extends ModuleComponent {
 					}
 				}
 			}, [
-				e.component(new ModelQuickTxt(m, (m, e) => {
+				e.component(new ModelTxt(m, (m, e) => {
 					e.addClass('fa-' + m.icon);
 					return '';
 				}, {
 					tagName: "span",
 					className: 'icon fas fw'
 				})),
-				e.component(new ModelQuickTxt(m, m => this.t(`menu.item.${m.name}`), {
+				e.component(new ModelTxt(m, m => this.t(`menu.item.${m.name}`), {
 					tagName: "span",
 					className: 'title'
 				}))

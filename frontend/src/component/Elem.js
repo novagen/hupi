@@ -127,7 +127,7 @@ class Elem {
 	 * Creates a new Elem instance
 	 * @param {Elem~node} node Root node
 	 */
-	constructor(node) {
+	constructor(node, afterRender) {
 		if (typeof node === 'function') {
 			node = node(n);
 		} else {
@@ -138,6 +138,7 @@ class Elem {
 		this.idNode = {};
 		this.ctx = this;
 		this.el = null;
+		this.afterRender = afterRender;
 
 		this._getNodeIds(node);
 	}
@@ -147,7 +148,13 @@ class Elem {
 			throw new Error("Already rendered");
 		}
 
-		return this.el = this._renderNode(div, this.node);
+		this.el = this._renderNode(div, this.node);
+
+		if (this.afterRender) {
+			this.afterRender(this.el);
+		}
+
+		return this.el;
 	}
 
 	unrender() {

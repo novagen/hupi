@@ -1,5 +1,5 @@
-import { Elem, Transition, Txt } from 'modapp-base-component';
-import { ModuleComponent, ModelQuickTxt } from 'component';
+import { Elem } from 'modapp-base-component';
+import { ModuleComponent, Txt, ModelTxt, Container } from 'component';
 import MainComponent from './MainComponent';
 import VolumeComponent from './VolumeComponent';
 import MenuComponent from './MenuComponent';
@@ -73,16 +73,12 @@ class LayoutComponent extends ModuleComponent {
 			}, [
 				n.elem('header', { className: 'cell shrink header medium-cell-block-container' }, [
 					n.elem('div', {}, [
-						n.elem('div', { className: 'home' }, [
-							n.component('home', new Transition())
-						]),
+						n.component('home', new Container( { className: 'home' })),
 						n.elem('div', { className: 'time' }, [
 							n.elem('span', { className: 'fas fa-fw fa-clock icon' }),
-							n.component(new ModelQuickTxt(this.time, (m) => m.time))
+							n.component(new ModelTxt(this.time, (m) => m.time))
 						]),
-						n.elem('div', { className: 'volume' }, [
-							n.component('vol', new Transition())
-						])
+						n.component('vol', new Container({ className: 'volume' }))
 					])
 				]),
 				n.elem('main', {
@@ -91,15 +87,11 @@ class LayoutComponent extends ModuleComponent {
 					n.elem('div', {
 						className: 'container'
 					}, [
+						n.component('main', new Container({ className: 'main' })),
 						n.elem('div', {
 							className: 'volume'
 						}, [
 							n.component('volume', new VolumeComponent(this.app, this.module, this.params.volume))
-						]),
-						n.elem('div', {
-							className: 'main'
-						}, [
-							n.component('main', new Transition())
 						])
 					]),
 				]),
@@ -129,7 +121,7 @@ class LayoutComponent extends ModuleComponent {
 		let node = this.node.getNode('vol');
 
 		let component = new Elem(n => n.elem('span', {}, [
-			n.component(new ModelQuickTxt(this.volume, (m, e) => {
+			n.component(new ModelTxt(this.volume, (m, e) => {
 				if (m.mute) {
 					e.removeClass('fa-volume-up');
 					e.addClass('fa-volume-,ute');
@@ -140,7 +132,7 @@ class LayoutComponent extends ModuleComponent {
 
 				return '';
 			}, { tagName: 'span', className: 'fas fa-fw icon' })),
-			n.component(new ModelQuickTxt(this.volume, (m, e) => {
+			n.component(new ModelTxt(this.volume, (m, e) => {
 				if (m.mute) {
 					e.addClass('disabled');
 				} else {
@@ -152,7 +144,7 @@ class LayoutComponent extends ModuleComponent {
 		]));
 
 		if (node && component) {
-			node.fade(component);
+			node.set(component);
 		}
 	}
 

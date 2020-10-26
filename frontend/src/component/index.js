@@ -1,19 +1,33 @@
 import CollectionList from './CollectionList.js';
-import Pagination from './Pagination.js';
 import Dialog from './Dialog.js';
 import ModuleComponent from './ModuleComponent.js';
-import ModelQuickTxt from './ModelQuickTxt.js';
-import QuickTxt from './QuickTxt.js';
+import ModelTxt from './ModelTxt.js';
+import Txt from './Txt.js';
 import Elem from './Elem.js';
 import RootElem from './RootElem.js';
+import CustomRadio from './CustomRadio.js';
+import ModelRadio from './ModelRadio.js';
+import Button from './Button.js';
+import ModelButton from './ModelButton.js';
+import Html from './Html.js';
+import ModelHtml from './ModelHtml.js';
+import Container from './Container.js';
+import Gauge from './Gauge.js';
 
 export {
 	CollectionList,
-	Pagination,
 	Dialog,
 	ModuleComponent,
-	QuickTxt,
-	ModelQuickTxt,
+	Txt,
+	ModelTxt,
 	Elem,
-	RootElem
+	RootElem,
+	CustomRadio,
+	ModelRadio,
+	Button,
+	ModelButton,
+	Html,
+	ModelHtml,
+	Container,
+	Gauge
 };

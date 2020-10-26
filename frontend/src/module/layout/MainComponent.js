@@ -1,7 +1,6 @@
 import { Elem } from 'modapp-base-component';
 import { ModuleComponent } from 'component';
 
-import './VolumeComponent.scss';
 import PlayingComponent from './PlayingComponent';
 
 class MainComponent extends ModuleComponent {

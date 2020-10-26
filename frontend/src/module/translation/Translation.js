@@ -1,6 +1,6 @@
 import i18next from 'i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
-import { Backend } from 'class';
+import { I18Backend } from 'class';
 
 class Translation {
 	constructor(app, params) {
@@ -12,6 +12,8 @@ class Translation {
 		this.app.require([ 'client' ], this._init.bind(this));
 
 		this._initialized = this._initialized.bind(this);
+		this._failed = this._failed.bind(this);
+
 		this.t = this.t.bind(this);
 	}
 
@@ -20,17 +22,26 @@ class Translation {
 		this.waiting = [];
 
 		i18next.on('initialized', this._initialized);
+		i18next.on('failedLoading', this._failed);
 
-		i18next.use(Backend).use(LanguageDetector).init({
+		i18next.use(I18Backend).use(LanguageDetector).init({
 			backend: {
 				client: this.module.client
 			},
 			fallbackLng: 'en',
 			saveMissing: true,
-			debug: false,
+			debug: this.params.debug,
 			ns: ['layout', 'alert' ],
 			defaultNS: 'layout'
-		}).then(() => {}).catch(() => {});
+		}).then(() => {}).catch(e => {
+			console.error(e);
+		});
+	}
+
+	_failed() {
+		for(let i in this.waiting) {
+			this.waiting[i].resolver(this.waiting[i].formatter(i.defaultValue));
+		}
 	}
 
 	_initialized() {
@@ -38,11 +49,12 @@ class Translation {
 		i18next.off('initialized', this._initialized);
 
 		for(let i in this.waiting) {
-			this.waiting[i].resolver(this.waiting[i].formatter(i18next.t(this.waiting[i].key)));
+			let value = i18next.t(this.waiting[i].key, i.defaultValue);
+			this.waiting[i].resolver(this.waiting[i].formatter(value));
 		}
 	}
 
-	t(key, formatter, ns = "layout") {
+	t(key, defaultValue, formatter, ns = "layout") {
 		key = `${ns}:${key.toLowerCase().replace(/ /g, "_").replace(/\./g, "_")}`;
 
 		if (formatter === undefined || formatter ===  null) {
@@ -60,12 +72,12 @@ class Translation {
 				rejecter = reject;
 			});
 
-			this.waiting.push({ key, promise, resolver, rejecter, formatter });
+			this.waiting.push({ key, promise, resolver, rejecter, formatter, defaultValue });
 			return promise;
 		}
 
 		return new Promise((resolve, _) =>  {
-			resolve(formatter(i18next.t(key)));
+			resolve(formatter(i18next.t(key, defaultValue)));
 		});
 	}
 

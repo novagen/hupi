@@ -43,6 +43,7 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.1",
+    "canvas-gauges": "^2.1.7",
     "foundation-sites": "^6.6.3",
     "i18next": "^19.7.0",
     "i18next-browser-languagedetector": "^6.0.1",

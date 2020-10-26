@@ -87,7 +87,7 @@ class Router {
 
 				let route = this.routes[this.initialRoute];
 
-				if (route) {
+				if (!this._isUnset(route)) {
 					routeId = route.id;
 					if (route.parseUrl) {
 						params = route.parseUrl(this.initialRouteData);
@@ -115,7 +115,6 @@ class Router {
 
 		// Set default state
 		history.replaceState(null, null, null);
-
 		this._setInitialRoute();
 	}
 
@@ -173,7 +172,7 @@ class Router {
 	 */
 	removeRoute(routeId) {
 		let route = this.routes[routeId];
-		if (!route) {
+		if (this._isUnset(route)) {
 			return;
 		}
 
@@ -237,7 +236,7 @@ class Router {
 		// this.initialRoute = null;
 		// this.initialRouteData = null;
 
-		if (!routeId) {
+		if (this._isUnset(routeId)) {
 			if (this.default) {
 				routeId = this.default.routeId;
 				params = this.default.params;
@@ -255,8 +254,9 @@ class Router {
 
 		let route = this.getRoute(routeId);
 
-		if (!route) {
+		if (this._isUnset(route)) {
 			Promise.reject(new Error("Route Id '" + routeId + "' not found"));
+			return;
 		}
 
 		if (this.current && this.current.route && this.current.route.onBeforeUnload && !force && !params.ignoreOnBeforeUnload) {
@@ -370,6 +370,14 @@ class Router {
 			this.initialRoute = null;
 			this.initialRouteData = null;
 		}
+
+		if (!this._isUnset(this.initialRoute) && this.initialRouteData) {
+			let route = this.routes[this.initialRoute];
+
+			if (route && route.setState && route.parseUrl) {
+				route.setState(route.parseUrl(this.initialRouteData));
+			}
+		}
 	}
 
 	resetRoute() {
@@ -380,7 +388,7 @@ class Router {
 		}
 
 		let route = this.routes[this.initialRoute];
-		if (!route) {
+		if (this._isUnset(route)) {
 			return;
 		}
 
@@ -441,12 +449,12 @@ class Router {
 
 	_isCurrent(routeId, params) {
 		// Check if both are not set
-		if (!routeId && !this.current) {
+		if (this._isUnset(routeId) && !this.current) {
 			return true;
 		}
 
 		// Check if one is set and the other isn't
-		if (!routeId !== !this.current) {
+		if (this._isUnset(routeId) !== !this.current) {
 			return false;
 		}
 
@@ -457,6 +465,10 @@ class Router {
 
 		// Make shallow compare of params objects
 		return obj.equal(params, this.current.params);
+	}
+
+	_isUnset(value) {
+		return typeof value === 'undefined' || value === null;
 	}
 }
 

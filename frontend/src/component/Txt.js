@@ -4,10 +4,10 @@ import { translate, onLocaleUpdate, offLocaleUpdate } from 'modapp-base-componen
 /**
  * A text component
  */
-class QuickTxt extends RootElem {
+class Txt extends RootElem {
 
 	/**
-	 * Creates an instance of QuickTxt
+	 * Creates an instance of Txt
 	 * @param {string|LocaleString} text Display text
 	 * @param {object} [opt] Optional parameters.
 	 * @param {string} [opt.tagName] Tag name (eg. 'h1') for the element. Defaults to 'span'.
@@ -88,4 +88,4 @@ class QuickTxt extends RootElem {
 	}
 }
 
-export default QuickTxt;
+export default Txt;

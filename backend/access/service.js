@@ -30,4 +30,13 @@ service.subscribe('access.media.>', (_, reply) => {
 	});
 });
 
+service.subscribe('access.dash.>', (_, reply) => {
+	service.publish(reply, {
+		result: {
+			get: true,
+			call: "*"
+		}
+	});
+});
+
 service.publish('system.reset', { resources: [ 'access.>' ] });
