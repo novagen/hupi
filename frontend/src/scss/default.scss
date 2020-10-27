@@ -25,11 +25,6 @@ body {
 	padding: 0;
 }
 
-// body {
-// 	background: #fefefe;
-// 	color: #222;
-// }
-
 header {
 	div {
 		.home {
@@ -60,10 +55,7 @@ main {
 		display: flex;
   		flex-flow: column;
 
-		.volume {}
-
 		.main {
-			padding: 10px;
 			flex: 1;
 			overflow: auto;
 		}
@@ -71,7 +63,7 @@ main {
 }
 
 header {
-	padding: 10px 20px;
+	padding: 10px 15px;
 	width: 100%;
 	box-sizing: border-box;
 	background: #222;

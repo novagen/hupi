@@ -4,12 +4,13 @@ import { ModelInput, ModelComponent } from 'modapp-resource-component';
 import 'scss/VolumeComponent.scss';
 
 class VolumeComponent extends ModuleComponent {
-	constructor(app, module, params) {
+	constructor(app, module, params, view) {
 		super('module.layout.volume', module);
 
 		this.app = app;
 		this.module = module;
 		this.params = params;
+		this.view = view;
 
 		this._renderVolume = this._renderVolume.bind(this);
 		this._load = this._load.bind(this);
@@ -24,14 +25,10 @@ class VolumeComponent extends ModuleComponent {
 	}
 
 	_renderVolume() {
-		let node = this.node.getNode('volume');
+		const node = this.node.getNode('volume');
 
-		let component = new Elem(n => n.elem('div', {
-			className: 'volume-grid'
-		}, [
-			n.elem('div', {
-				className: 'volume-button'
-			}, [
+		const component = new Elem(e => e.component(new ModelComponent(this.view, new Elem(n => n.elem('div', { className: 'volume-grid' }, [
+			n.elem('div', { className: 'volume-button' }, [
 				n.component(new ModelComponent(this.model, new Elem(c => c.elem('span', {
 					className: 'button',
 					events: {
@@ -42,9 +39,7 @@ class VolumeComponent extends ModuleComponent {
 						}
 					}
 				}, [
-					c.component('icon', new Txt('', {
-						className: 'fas fa-fw fa-lg'
-					}))
+					c.component('icon', new Txt('', { className: 'fas fa-fw fa-lg' }))
 				])), (_, c) => {
 					let icon = c.getNode('icon');
 					if (!icon) {
@@ -131,7 +126,13 @@ class VolumeComponent extends ModuleComponent {
 					}
 				}))
 			])
-		]));
+		])), (m, e) => {
+			if (m.volume) {
+				e.removeClass('hidden');
+			} else {
+				e.addClass('hidden');
+			}
+		})));
 
 		if (node && component) {
 			node.set(component);
@@ -171,11 +172,7 @@ class VolumeComponent extends ModuleComponent {
 	}
 
 	render(el) {
-		this.node = new Elem(n => n.elem("div", {
-			className: 'grid-x'
-		}, [
-			n.component('volume', new Container({ className: 'cell' }))
-		]));
+		this.node = new Elem(n => n.component('volume', new Container({ className: 'volume' })));
 
 		this.node.render(el);
 		this._load();

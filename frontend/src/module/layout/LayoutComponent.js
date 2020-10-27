@@ -28,9 +28,21 @@ class LayoutComponent extends ModuleComponent {
 			data: {}
 		});
 
-		this._setListeners = this._setListeners.bind(this);
+		this.view = new Model({
+			eventBus: this.app.eventBus,
+			namespace: 'module.layout.map.view',
+			definition: {
+				volume: {
+					type: 'boolean',
+					default: false
+				}
+			},
+			data: {}
+		});
 
+		this._setListeners = this._setListeners.bind(this);
 		this._modelChanged = this._modelChanged.bind(this);
+		this._viewChanged = this._viewChanged.bind(this);
 		this._setRoute = this._setRoute.bind(this);
 		this._setContent = this._setContent.bind(this);
 		this._setComponent = this._setComponent.bind(this);
@@ -41,6 +53,8 @@ class LayoutComponent extends ModuleComponent {
 	}
 
 	_modelChanged() {}
+
+	_viewChanged() {}
 
 	_startTime() {
 		var today = new Date();
@@ -87,12 +101,8 @@ class LayoutComponent extends ModuleComponent {
 					n.elem('div', {
 						className: 'container'
 					}, [
-						n.component('main', new Container({ className: 'main' })),
-						n.elem('div', {
-							className: 'volume'
-						}, [
-							n.component('volume', new VolumeComponent(this.app, this.module, this.params.volume))
-						])
+						n.component('volume', new VolumeComponent(this.app, this.module, this.params.volume, this.view)),
+						n.component('main', new Container({ className: 'main' }))
 					]),
 				]),
 				n.elem('footer', { className: 'cell shrink footer' }, [
@@ -101,13 +111,13 @@ class LayoutComponent extends ModuleComponent {
 			])
 		);
 
-		this._setListeners(true);
-
 		this.node.render(el);
 
 		this._loadVolumeModel();
 		this._setRoute();
 		this._startTime();
+
+		this._setListeners(true);
 	}
 
 	_loadVolumeModel() {
@@ -120,11 +130,13 @@ class LayoutComponent extends ModuleComponent {
 	_renderVolume() {
 		let node = this.node.getNode('vol');
 
-		let component = new Elem(n => n.elem('span', {}, [
+		let component = new Elem(n => n.elem('span', {
+			events: { click: () => this.view.set({ volume: !this.view.volume })}
+		}, [
 			n.component(new ModelTxt(this.volume, (m, e) => {
 				if (m.mute) {
 					e.removeClass('fa-volume-up');
-					e.addClass('fa-volume-,ute');
+					e.addClass('fa-volume-mute');
 				} else {
 					e.removeClass('fa-volume-mute');
 					e.addClass('fa-volume-up');
@@ -208,9 +220,11 @@ class LayoutComponent extends ModuleComponent {
 		if (on) {
 			this.module.router.on('set', this._setRoute);
 			this.model.on('change', this._modelChanged);
+			this.view.on('change', this._viewChanged);
 		} else {
 			this.module.router.off('set', this._setRoute);
 			this.model.off('change', this._modelChanged);
+			this.view.off('change', this._viewChanged);
 		}
 	}
 

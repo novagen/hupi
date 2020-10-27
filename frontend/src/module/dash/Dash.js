@@ -5,7 +5,7 @@ class Dash {
 		this.app = app;
 		this.params = params;
 
-		this.app.require([ 'router', 'layout','alert', 'client', 'translation' ], this._init.bind(this));
+		this.app.require([ 'router', 'layout','alert', 'client', 'translation', 'maps' ], this._init.bind(this));
 	}
 
 	_init(module) {
@@ -20,7 +20,7 @@ class Dash {
 			order: 40,
 			setState: () => {},
 			component: {
-				'main': new DashComponent(this.app, this.module)
+				'main': new DashComponent(this.app, this.module, this.params)
 			},
 			getUrl: () => {},
 			parseUrl: () => {}
