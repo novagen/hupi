@@ -106,3 +106,6 @@ dist
 # Builds and caches
 **/build
 backend/translation/translations/missing
+
+# Custom
+.key
