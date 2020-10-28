@@ -24,8 +24,8 @@
   "homepage": "https://github.com/novagen/hupi#readme",
   "devDependencies": {
     "depcheck": "^1.2.0",
-    "eslint": "^7.10.0",
+    "eslint": "^7.12.1",
     "esm": "^3.2.25",
-    "npm-check-updates": "^9.0.3"
+    "npm-check-updates": "^9.2.3"
   }
 }

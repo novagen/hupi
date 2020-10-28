@@ -84,7 +84,12 @@ module.exports = {
 			},
 			{
 				test: /\.(ico)/,
-				loader: 'url-loader?limit=8192'
+				use: [{
+					loader: 'url-loader',
+					options: {
+						limit: 8192
+					}
+				}]
 			},
 			{
 				test: /\.(scss|css)$/,
@@ -107,7 +112,12 @@ module.exports = {
 			},
 			{
 				test: /\.(woff|woff2|eot|otf|svg|ttf)$/,
-				loader: 'url-loader?limit=8192'
+				use: [{
+					loader: 'url-loader',
+					options: {
+						limit: 8192
+					}
+				}]
 			}
 		]
 	}

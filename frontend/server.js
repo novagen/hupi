@@ -8,15 +8,15 @@ const port = 8010;
 
 const middleware = webpackMiddleware(webpack(webpackConfig), {
 	publicPath: webpackConfig.output.publicPath,
-	contentBase: 'src',
-	stats: {
-		colors: true,
-		hash: false,
-		timings: true,
-		chunks: false,
-		chunkModules: false,
-		modules: false
-	}
+	// contentBase: 'src',
+	// stats: {
+	// 	colors: true,
+	// 	hash: false,
+	// 	timings: true,
+	// 	chunks: false,
+	// 	chunkModules: false,
+	// 	modules: false
+	// }
 });
 
 app.use(middleware);
