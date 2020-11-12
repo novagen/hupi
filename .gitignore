@@ -105,4 +105,7 @@ dist
 
 # Builds and caches
 **/build
+
+# Local files
 backend/translation/translations/missing
+**/*.local.js
