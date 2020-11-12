@@ -119,6 +119,14 @@ class Service {
         this.nats.unsubscribe("*");
         this.nats.close();
     }
+
+    d(...val) {
+        console.log(`[${this.name}]`, val);
+    }
+
+    e(...val) {
+        console.error(`[${this.name}]`, val);
+    }
 }
 
 export default Service;

@@ -6,5 +6,7 @@
     "module_external_title": "external",
     "module_audio_title": "audio",
     "module_settings_title": "settings",
-    "module_layout_main_menu_item_dash":"Dashboard"
+    "module_layout_main_menu_item_dash": "Dashboard",
+    "module_layout_main_menu_item_location": "Location",
+    "module_location_title": "Location"
 }

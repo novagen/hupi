@@ -6,5 +6,7 @@
     "module_external_title": "extern",
     "module_audio_title": "ljud",
     "module_settings_title": "inställningar",
-    "module_layout_main_menu_item_dash":"Instrumentbräda"
+    "module_layout_main_menu_item_dash":"Instrumentbräda",
+    "module_layout_main_menu_item_location": "Plats",
+    "module_location_title": "Plats"
 }

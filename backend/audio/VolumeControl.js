@@ -1,10 +1,17 @@
 import loudness from 'loudness';
 
+const events = require('events');
+const util = require('util');
+
+util.inherits(VolumeContol, events.EventEmitter);
+
 class VolumeContol {
     constructor(opt) {
         this.opt = Object.assign({
 			onSet: () => {}
         }, opt);
+
+        events.EventEmitter.call(this);
     }
 
     volume() {
@@ -13,7 +20,7 @@ class VolumeContol {
                 resolve(r);
             }).catch(e => {
                 // log error and resolve with dummy (probably no ALSA mixer available)
-                console.error(e);
+                this.emit('error', e);
                 resolve(0);
             });
         });
@@ -24,7 +31,7 @@ class VolumeContol {
             loudness.getMuted().then(r => {
                 resolve(r);
             }).catch(e => {
-                console.error(e);
+                this.emit('error', e);
                 resolve(false);
             });
         });
@@ -36,7 +43,7 @@ class VolumeContol {
                 resolve();
             }).catch(e => {
                 // log error and resolve with dummy (probably no ALSA mixer available)
-                console.error(e);
+                this.emit('error', e);
                 resolve();
             });
         });
@@ -47,7 +54,7 @@ class VolumeContol {
             loudness.setMuted(val).then(_ => {
                 resolve();
             }).catch(e => {
-                console.error(e);
+                this.emit('error', e);
                 resolve();
             });
         });
@@ -67,7 +74,7 @@ class VolumeContol {
         Promise.all(promises).then(_ => {
             this.opt.onSet(changed);
         }).catch(e => {
-            console.error(e);
+            this.emit('error', e);
         });
     }
 }
