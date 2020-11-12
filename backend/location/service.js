@@ -23,7 +23,7 @@ const locationModel = {
 
 const init = () => {
     client.on('connected', () => {
-        this.d('GPSD Connected');
+        service.d('GPSD Connected');
 
         client.watch({
             class: 'WATCH',

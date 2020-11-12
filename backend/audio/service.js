@@ -20,7 +20,7 @@ const volume = new VolumeControl({
 });
 
 volume.on('error', e => {
-	this.e(e);
+	service.e(e);
 });
 
 const volumeModel = {
