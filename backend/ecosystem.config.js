@@ -108,6 +108,23 @@ module.exports = {
 			}
         },
 		{
+			name: 'storage',
+			script: 'storage/service.js',
+			args: '',
+			watch: ["storage/"],
+			ignore_watch: ["node_modules"],
+			node_args: node_args,
+			autorestart: autorestart,
+			watch_delay: watch_delay,
+			max_memory_restart: max_memory_restart,
+			env: {
+				NODE_ENV: 'development'
+			},
+			env_production: {
+				NODE_ENV: 'production'
+			}
+        },
+		{
 			name: 'translation',
 			script: 'translation/service.js',
 			args: '',

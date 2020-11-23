@@ -16,6 +16,7 @@
 	"dependencies": {
 		"async-polling": "^0.2.1",
 		"loudness": "^0.4.1",
+		"mongodb": "^3.6.3",
 		"nats": "^1.4.12",
 		"naudiodon": "^2.2.4",
 		"node-gpsd-client": "^1.0.0",
