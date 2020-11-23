@@ -89,6 +89,40 @@ module.exports = {
 			env_production: {
 				NODE_ENV: 'production'
 			}
+    },
+		{
+			name: 'location',
+			script: 'location/service.js',
+			args: '',
+			watch: ["location/"],
+			ignore_watch: ["node_modules"],
+			node_args: node_args,
+			autorestart: autorestart,
+			watch_delay: watch_delay,
+			max_memory_restart: max_memory_restart,
+			env: {
+				NODE_ENV: 'development'
+			},
+			env_production: {
+				NODE_ENV: 'production'
+			}
+        },
+		{
+			name: 'storage',
+			script: 'storage/service.js',
+			args: '',
+			watch: ["storage/"],
+			ignore_watch: ["node_modules"],
+			node_args: node_args,
+			autorestart: autorestart,
+			watch_delay: watch_delay,
+			max_memory_restart: max_memory_restart,
+			env: {
+				NODE_ENV: 'development'
+			},
+			env_production: {
+				NODE_ENV: 'production'
+			}
         },
 		{
 			name: 'translation',

@@ -19,6 +19,10 @@ const volume = new VolumeControl({
 	}
 });
 
+volume.on('error', e => {
+	service.e(e);
+});
+
 const volumeModel = {
 	volume: 50,
 	mute: false
@@ -128,7 +132,7 @@ const init = () => {
 
 		setAudioValues(val);
 	}).catch(e => {
-		console.error(e);
+		service.e(e);
 	});
 };
 
@@ -141,7 +145,7 @@ const read = () => {
 			toggleMute();
 		},
 		onError: (err) => {
-			console.error(err);
+			service.e(err);
 		}
 	}).start();
 };

@@ -105,7 +105,7 @@ service.subscribe('call.system.translation.*.load', function(msg, reply, subj) {
 	let { params } = JSON.parse(msg);
 
 	getTranslations(lang, params.namespace).then(model => {
-		console.log("loading: ", lang);
+		service.d("loading: ", lang);
 		service.publish(reply, { result: model });
 	}).catch(e => {
 		service.publish(reply, Service.internalError(JSON.stringify(e)));
