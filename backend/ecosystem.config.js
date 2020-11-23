@@ -89,7 +89,7 @@ module.exports = {
 			env_production: {
 				NODE_ENV: 'production'
 			}
-        },
+    },
 		{
 			name: 'location',
 			script: 'location/service.js',

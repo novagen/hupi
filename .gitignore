@@ -108,4 +108,8 @@ dist
 
 # Local files
 backend/translation/translations/missing
+
+# Custom
+.key
+=======
 **/*.local.js

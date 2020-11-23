@@ -1,4 +1,6 @@
 /* eslint-disable no-console */
+import Nats from 'nats';
+
 var signals = {
     'SIGHUP': 1,
     'SIGINT': 2,
@@ -27,7 +29,7 @@ class Service {
 
     start() {
         console.info('[' + this.name + '] starting');
-        this.nats = require('nats').connect(this.config.path);
+        this.nats = Nats.connect(this.config.path);
     }
 
     static notFound() {
