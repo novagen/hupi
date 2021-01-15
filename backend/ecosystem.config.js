@@ -108,6 +108,23 @@ module.exports = {
 			}
         },
 		{
+			name: 'rfid',
+			script: 'rfid/service.js',
+			args: '',
+			watch: ["rfid/"],
+			ignore_watch: ["node_modules"],
+			node_args: node_args,
+			autorestart: autorestart,
+			watch_delay: watch_delay,
+			max_memory_restart: max_memory_restart,
+			env: {
+				NODE_ENV: 'development'
+			},
+			env_production: {
+				NODE_ENV: 'production'
+			}
+        },
+		{
 			name: 'translation',
 			script: 'translation/service.js',
 			args: '',

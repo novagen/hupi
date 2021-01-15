@@ -17,8 +17,9 @@
 		"async-polling": "^0.2.1",
 		"loudness": "^0.4.1",
 		"nats": "^1.4.12",
-		"naudiodon": "^2.2.4",
+		"naudiodon": "^2.3.1",
 		"node-gpsd-client": "^1.0.0",
+		"node-rfid": "^1.0.7",
 		"object-diff": "0.0.4",
 		"rpio": "^2.2.0"
 	}

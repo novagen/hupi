@@ -137,17 +137,20 @@ const init = () => {
 };
 
 const read = () => {
-	new RotaryReader({
+	const reader = new RotaryReader({
 		onRotation: (dir) => {
 			changeVolume(dir);
 		},
 		onClick: () => {
 			toggleMute();
-		},
-		onError: (err) => {
-			service.e(err);
 		}
-	}).start();
+	});
+
+	reader.on('error', e => {
+		service.e(e);
+	});
+
+	reader.start();
 };
 
 service.subscribe('get.audio.device.*', function (_, reply, subj) {

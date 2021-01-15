@@ -30,7 +30,7 @@ class Location {
 		this.module.router.addRoute({
 			id: "location",
 			name: 'Location',
-			icon: 'broadcast-tower',
+			icon: 'map-marked-alt',
 			parentId: null,
 			order: 50,
 			setState: this._setState,

@@ -83,10 +83,6 @@ module.exports = {
 				loader: 'file-loader'
 			},
 			{
-				test: /\.(ico)/,
-				loader: 'url-loader?limit=8192'
-			},
-			{
 				test: /\.(scss|css)$/,
 				use: [{
 						loader: 'style-loader',
@@ -106,8 +102,13 @@ module.exports = {
 				]
 			},
 			{
-				test: /\.(woff|woff2|eot|otf|svg|ttf)$/,
-				loader: 'url-loader?limit=8192'
+				test: /\.(woff|woff2|eot|otf|svg|ttf|ico)$/,
+				use: [{
+					loader: 'url-loader',
+					options: {
+						limit: 8192
+					}
+				}]
 			}
 		]
 	}
