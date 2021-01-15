@@ -36,6 +36,7 @@ class RotaryReader {
 
         events.EventEmitter.call(this);
 
+        this.ready = false;
         this.initPins();
 	}
 
@@ -64,7 +65,13 @@ class RotaryReader {
             }
         });
 
-        this.polling.run();
+        if (this.ready) {
+            this.polling.run();
+        } else {
+            this.on('ready', () => {
+                this.polling.run();
+            });
+        }
     }
 
     pollEncoder(callback) {
@@ -214,12 +221,15 @@ class RotaryReader {
 
     initPins() {
         try {
-        rpio.open(this.opt.clkPin, rpio.INPUT);
-        rpio.open(this.opt.dtPin, rpio.INPUT);
-        rpio.open(this.opt.swPin, rpio.INPUT);
+            rpio.open(this.opt.clkPin, rpio.INPUT);
+            rpio.open(this.opt.dtPin, rpio.INPUT);
+            rpio.open(this.opt.swPin, rpio.INPUT);
         } catch (e) {
             this.emit('error', e);
         }
+
+        this.ready = true;
+        this.emit('ready', this);
     }
 }
 
