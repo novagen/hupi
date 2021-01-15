@@ -221,7 +221,7 @@ class RotaryReader {
 
     initPins() {
         rpio.init({
-            gpiomem: false
+            gpiomem: true
         });
 
         try {
