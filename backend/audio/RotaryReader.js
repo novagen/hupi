@@ -220,6 +220,10 @@ class RotaryReader {
     }
 
     initPins() {
+        rpio.init({
+            gpiomem: false
+        });
+
         try {
             rpio.open(this.opt.clkPin, rpio.INPUT);
             rpio.open(this.opt.dtPin, rpio.INPUT);
