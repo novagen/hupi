@@ -5,3 +5,5 @@ Head Unit RPI for cars
 * Node 10
 * PM2
 * gpsd
+* nats server
+* resgate

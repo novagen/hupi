@@ -3,8 +3,6 @@ import loudness from 'loudness';
 const events = require('events');
 const util = require('util');
 
-util.inherits(VolumeContol, events.EventEmitter);
-
 class VolumeContol {
     constructor(opt) {
         this.opt = Object.assign({
@@ -78,5 +76,7 @@ class VolumeContol {
         });
     }
 }
+
+util.inherits(VolumeContol, events.EventEmitter);
 
 export default VolumeContol;

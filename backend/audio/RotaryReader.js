@@ -4,8 +4,6 @@ import rpio from 'rpio';
 const events = require('events');
 const util = require('util');
 
-util.inherits(RotaryReader, events.EventEmitter);
-
 const clkUp = [0, 0, 1, 1];
 const dtUp = [1, 0, 0, 1];
 const clkDown = [1, 0, 0, 1];
@@ -224,5 +222,7 @@ class RotaryReader {
         }
     }
 }
+
+util.inherits(RotaryReader, events.EventEmitter);
 
 export default RotaryReader;
