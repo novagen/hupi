@@ -13,7 +13,7 @@ let localConfig = {
 	default: {}
 };
 
-var localConfigPath = path.join(__dirname, 'config.local.js'); // Find optional local config
+var localConfigPath = path.join(path.resolve(path.dirname('')), 'config.local.js'); // Find optional local config
 
 if (fs.existsSync(localConfigPath)) {
 	localConfig = require(localConfigPath);
