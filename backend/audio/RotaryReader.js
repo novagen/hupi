@@ -2,7 +2,6 @@
 // import rpio from 'rpio';
 
 var raspi = require('raspi');
-var RotaryEncoder = require('raspi-rotary-encoder').RotaryEncoder;
 
 const events = require('events');
 const util = require('util');
@@ -238,14 +237,22 @@ class RotaryReader {
         //     this.emit('error', e);
         // }
 
-        raspi.init(function() {
-            this.encoder = new RotaryEncoder({
-                pins: { a: this.opt.clkPin, b: this.opt.dtPin },
-                pullResistors: { a: 'up', b: 'up' }
-            });
+        raspi.init(() => {
+            try {
+                var RotaryEncoder = require('raspi-rotary-encoder').RotaryEncoder;
 
-            this.ready = true;
-            this.emit('ready', this);
+                if (RotaryEncoder) {
+                    this.encoder = new RotaryEncoder({
+                        pins: { a: this.opt.clkPin, b: this.opt.dtPin },
+                        pullResistors: { a: 'up', b: 'up' }
+                    });
+
+                    this.ready = true;
+                    this.emit('ready', this);
+                }
+            } catch (e) {
+                this.emit('error', e);
+            }
         });
     }
 }
