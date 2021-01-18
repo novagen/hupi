@@ -23,6 +23,7 @@
 		"node-gpsd-client": "^1.0.0",
 		"node-rfid": "^1.0.7",
 		"object-diff": "0.0.4",
-		"rpio": "^2.4.0"
+		"raspi": "^6.0.1",
+		"rpio": "^2.4.2"
 	}
 }

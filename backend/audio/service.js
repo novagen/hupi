@@ -150,7 +150,10 @@ const read = () => {
 		service.e(e);
 	});
 
-	reader.start();
+	reader.on('ready', () => {
+		reader.start();
+	});
+
 };
 
 service.subscribe('get.audio.device.*', function (_, reply, subj) {

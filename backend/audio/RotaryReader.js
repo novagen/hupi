@@ -1,5 +1,8 @@
-import AsyncPolling from 'async-polling';
-import rpio from 'rpio';
+// import AsyncPolling from 'async-polling';
+// import rpio from 'rpio';
+
+var raspi = require('raspi');
+var RotaryEncoder = require('raspi-rotary-encoder').RotaryEncoder;
 
 const events = require('events');
 const util = require('util');
@@ -10,7 +13,7 @@ const clkDown = [1, 0, 0, 1];
 const dtDown = [0, 0, 1, 1];
 
 const clkPin = 11;
-const dtPin = 12;
+const dtPin = 15;
 const swPin = 13;
 const pollingInterval = 2;
 
@@ -41,75 +44,73 @@ class RotaryReader {
 	}
 
     start() {
-        this.polling = AsyncPolling((end) => {
-            this.pollEncoder((error, response) => {
-                if (error) {
-                    end(error);
-                    return;
-                }
+        // this.polling = AsyncPolling((end) => {
+        //     this.pollEncoder((error, response) => {
+        //         if (error) {
+        //             end(error);
+        //             return;
+        //         }
 
-                end(null, response);
-            });
-        }, this.opt.pollingInterval);
+        //         end(null, response);
+        //     });
+        // }, this.opt.pollingInterval);
 
-        this.polling.on('error', (error) => {
-            this.emit('error', error);
+        // this.polling.on('error', (error) => {
+        //     this.emit('error', error);
+        // });
+
+        // this.polling.on('result', (result) => {
+        //     if (result.changed) {
+        //         this.addRotationQueue(result);
+        //         this.addClickQueue(result);
+
+        //         this.getRotaryEvent();
+        //     }
+        // });
+
+        // this.polling.run();
+
+        this.encoder.addListener('change', function (evt) {
+            console.log('Count', evt.value);
         });
-
-        this.polling.on('result', (result) => {
-            if (result.changed) {
-                this.addRotationQueue(result);
-                this.addClickQueue(result);
-
-                this.getRotaryEvent();
-            }
-        });
-
-        if (this.ready) {
-            this.polling.run();
-        } else {
-            this.on('ready', () => {
-                this.polling.run();
-            });
-        }
     }
 
-    pollEncoder(callback) {
-        let changed = false;
+    // pollEncoder(callback) {
+    //     let changed = false;
 
-        try {
-            let clk = rpio.read(this.opt.clkPin);
-            let dt = rpio.read(this.opt.dtPin);
-            let sw = rpio.read(this.opt.swPin);
+    //     try {
+    //         let clk = rpio.read(this.opt.clkPin);
+    //         let dt = rpio.read(this.opt.dtPin);
+    //         let sw = rpio.read(this.opt.swPin);
 
-            if (this.lastPinValues.clk != clk) {
-                this.lastPinValues.clk = clk;
-                changed = true;
-            }
+    //         if (this.lastPinValues.clk != clk) {
+    //             this.lastPinValues.clk = clk;
+    //             changed = true;
+    //         }
 
-            if (this.lastPinValues.dt != dt) {
-                this.lastPinValues.dt = dt;
-                changed = true;
-            }
+    //         if (this.lastPinValues.dt != dt) {
+    //             this.lastPinValues.dt = dt;
+    //             changed = true;
+    //         }
 
-            if (this.lastPinValues.sw != sw) {
-                this.lastPinValues.sw = sw;
-                changed = true;
-            }
+    //         if (this.lastPinValues.sw != sw) {
+    //             this.lastPinValues.sw = sw;
+    //             changed = true;
+    //         }
 
-            let response = {
-                clk,
-                dt,
-                sw,
-                changed
-            };
+    //         let response = {
+    //             clk,
+    //             dt,
+    //             sw,
+    //             changed
+    //         };
 
-            callback(null, response);
-        } catch (e) {
-            this.emit('error', e);
-            callback(e, null);
-        }
-    }
+    //         callback(null, response);
+    //     } catch (e) {
+    //         this.emit('error', e);
+    //         callback(e, null);
+    //     }
+    // }
 
     getRotaryEvent() {
         let rotation = this.checkForRotation();
@@ -219,21 +220,33 @@ class RotaryReader {
         return true;
     }
 
+    isReady() {
+        return this.ready;
+    }
+
     initPins() {
-        rpio.init({
-            gpiomem: true
+        // rpio.init({
+        //     gpiomem: true,
+        //     mapping: 'physical'
+        // });
+
+        // try {
+        //     rpio.open(this.opt.clkPin, rpio.INPUT);
+        //     rpio.open(this.opt.dtPin, rpio.INPUT);
+        //     rpio.open(this.opt.swPin, rpio.INPUT);
+        // } catch (e) {
+        //     this.emit('error', e);
+        // }
+
+        raspi.init(function() {
+            this.encoder = new RotaryEncoder({
+                pins: { a: this.opt.clkPin, b: this.opt.dtPin },
+                pullResistors: { a: 'up', b: 'up' }
+            });
+
+            this.ready = true;
+            this.emit('ready', this);
         });
-
-        try {
-            rpio.open(this.opt.clkPin, rpio.INPUT);
-            rpio.open(this.opt.dtPin, rpio.INPUT);
-            rpio.open(this.opt.swPin, rpio.INPUT);
-        } catch (e) {
-            this.emit('error', e);
-        }
-
-        this.ready = true;
-        this.emit('ready', this);
     }
 }
 
