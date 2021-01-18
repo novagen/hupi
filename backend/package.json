@@ -24,6 +24,7 @@
 		"node-rfid": "^1.0.7",
 		"object-diff": "0.0.4",
 		"raspi": "^6.0.1",
+		"raspi-rotary-encoder": "^0.4.0",
 		"rpio": "^2.4.2"
 	}
 }
