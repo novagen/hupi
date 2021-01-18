@@ -11,9 +11,9 @@ const dtUp = [1, 0, 0, 1];
 const clkDown = [1, 0, 0, 1];
 const dtDown = [0, 0, 1, 1];
 
-const clkPin = 11;
-const dtPin = 15;
-const swPin = 13;
+const clkPin = 'P1-11';
+const dtPin = 'P1-15';
+const swPin = 'P1-13';
 const pollingInterval = 2;
 
 class RotaryReader {
